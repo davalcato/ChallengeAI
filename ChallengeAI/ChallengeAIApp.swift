@@ -7,13 +7,14 @@
 
 import SwiftUI
 
+@available(iOS 14.0, *)
 @main
 struct ChallengeAIApp: App {
     let persistenceController = PersistenceController.shared
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            OnboardingView() // Start with the OnboardingView
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
