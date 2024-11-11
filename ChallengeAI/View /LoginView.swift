@@ -48,13 +48,23 @@ struct CustomTextField: View {
     }
 }
 
+//// WelcomeView Component
+//struct WelcomeView: View {
+//    var body: some View {
+//        Text("Welcome!")
+//            .font(.largeTitle)
+//            .fontWeight(.bold)
+//            .padding()
+//    }
+//}
+
 // LoginView Component
 struct LoginView: View {
     @StateObject private var loginData = LoginData() // Use StateObject for LoginData
     @State private var showErrorAlert = false
     @State private var showSuccessMessage = false
     @State private var showFailureMessage = false
-    @State private var appState = AppState() // Initialize the AppState
+    @State private var navigateToWelcome = false // State to trigger navigation
 
     var body: some View {
         NavigationView {
@@ -104,6 +114,7 @@ struct LoginView: View {
                     .padding(.bottom, 20)
                 }
 
+                // Login/Register Button
                 Button(action: {
                     // Handle registration or login action
                     if loginData.registerUser {
@@ -111,10 +122,7 @@ struct LoginView: View {
                             loginData.register { success in
                                 DispatchQueue.main.async {
                                     if success {
-                                        print("Registration successful")
-                                        showSuccessMessage = true
-                                        showFailureMessage = false
-                                        appState.isLoggedIn = true
+                                        navigateToWelcome = true // Trigger navigation on success
                                     } else {
                                         print("Registration failed")
                                         showFailureMessage = true
@@ -131,7 +139,7 @@ struct LoginView: View {
                             loginData.login { success in
                                 DispatchQueue.main.async {
                                     if success {
-                                        appState.isLoggedIn = true
+                                        navigateToWelcome = true // Trigger navigation on success
                                     } else {
                                         loginData.errorMessage = "Incorrect email or password."
                                         showErrorAlert = true
@@ -169,6 +177,15 @@ struct LoginView: View {
                         .foregroundColor(.red)
                         .padding(.top, 10)
                 }
+
+                // NavigationLink to WelcomeView
+                NavigationLink(
+                    destination: WelcomeView(),
+                    isActive: $navigateToWelcome,
+                    label: {
+                        EmptyView() // Hidden NavigationLink
+                    }
+                )
 
                 // Google Sign-In Button (no functionality implemented)
                 Button(action: {
@@ -258,27 +275,28 @@ class LoginData: ObservableObject {
     }
 
     func register(completion: (Bool) -> Void) {
-        // Implement registration logic
+        // Simulate registration logic
         completion(true)
     }
 
     func login(completion: (Bool) -> Void) {
-        // Implement login logic
+        // Simulate login logic
         completion(true)
     }
 }
 
-// Assuming you have an AppState model
-class AppState: ObservableObject {
-    @Published var isLoggedIn: Bool = false
-}
 
-// Preview for the LoginView
-struct LoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginView()
-    }
-}
+// Assuming you have an AppState model
+//class AppState: ObservableObject {
+//    @Published var isLoggedIn: Bool = false
+//}
+//
+//// Preview for the LoginView
+//struct LoginView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        LoginView()
+//    }
+//}
 
 
 
