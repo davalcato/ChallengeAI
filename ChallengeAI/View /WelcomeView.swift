@@ -12,35 +12,51 @@ struct WelcomeView: View {
     @EnvironmentObject var appState: AppState
 
     var body: some View {
-        VStack {
-            Text("Welcome to the Dashboard")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+        ZStack {
+            VStack {
+                Spacer() // Pushes content towards the top
+
+                // Title at the top, centered horizontally
+                Text("Welcome to the Dashboard")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding(.top, 40) // Adjust top padding as needed
+                    .frame(maxWidth: .infinity, alignment: .center)
+
+                Spacer() // Adds space between the title and the button
+
+                // Button centered in the middle, just below the title
+                Button(action: {
+                    // Navigate to another view or the actual dashboard
+                }) {
+                    Text("Go to Dashboard")
+                        .font(.title2)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
                 .padding()
 
-            // Button to navigate to actual dashboard or other features
-            Button(action: {
-                // Navigate to another view or the actual dashboard
-            }) {
-                Text("Go to Dashboard")
-                    .font(.title2)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+                Spacer() // Pushes the button upwards to stay centered
             }
-            .padding()
 
-            Button(action: {
-                // Log the user out
-                appState.isLoggedIn = false
-            }) {
-                Text("Logout")
-                    .foregroundColor(.red)
-                    .padding()
+            // Logout button in the top-right corner
+            VStack {
+                HStack {
+                    Spacer() // Pushes the logout button to the right
+                    Button(action: {
+                        // Log the user out
+                        appState.isLoggedIn = false
+                    }) {
+                        Text("Logout")
+                            .foregroundColor(.red)
+                            .padding()
+                    }
+                }
+                Spacer() // Ensures that the logout button is at the top
             }
         }
-        .padding()
     }
 }
 
@@ -50,6 +66,7 @@ private let itemFormatter: DateFormatter = {
     formatter.timeStyle = .medium
     return formatter
 }()
+
 
 
 #Preview {

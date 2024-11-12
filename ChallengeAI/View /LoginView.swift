@@ -48,17 +48,6 @@ struct CustomTextField: View {
     }
 }
 
-//// WelcomeView Component
-//struct WelcomeView: View {
-//    var body: some View {
-//        Text("Welcome!")
-//            .font(.largeTitle)
-//            .fontWeight(.bold)
-//            .padding()
-//    }
-//}
-
-// LoginView Component
 struct LoginView: View {
     @StateObject private var loginData = LoginData() // Use StateObject for LoginData
     @State private var showErrorAlert = false
@@ -114,7 +103,7 @@ struct LoginView: View {
                     .padding(.bottom, 20)
                 }
 
-                // Login/Register Button
+                // Login/Register Button with adjusted hit area
                 Button(action: {
                     // Handle registration or login action
                     if loginData.registerUser {
@@ -155,13 +144,15 @@ struct LoginView: View {
                     Text(loginData.registerUser ? "Register" : "Login")
                         .font(.title3)
                         .fontWeight(.bold)
-                        .padding()
-                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 15)  // Only vertical padding inside the button
+                        .frame(maxWidth: .infinity)  // Let the button take full width
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
-                        .padding(.horizontal, 50)
                 }
+                .padding(.horizontal, 50)  // Padding outside the button does not affect hit area
+                .contentShape(Rectangle()) // Ensures only the button is tappable
+
                 .alert(isPresented: $showErrorAlert) {
                     Alert(title: Text("Error"), message: Text(loginData.errorMessage), dismissButton: .default(Text("OK")))
                 }
@@ -253,6 +244,7 @@ struct LoginView: View {
         }
     }
 }
+
 
 // Assuming you have a LoginData model
 class LoginData: ObservableObject {
