@@ -11,6 +11,7 @@
 		BF1E2B2170540E0F16AC98F1 /* Pods_ChallengeAITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEB9CEBD1F97AC4380E28CB /* Pods_ChallengeAITests.framework */; };
 		DA102B3D2CE15E2C002B9DF1 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA102B3C2CE15E2C002B9DF1 /* WelcomeView.swift */; };
 		DA102B3F2CE1675A002B9DF1 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA102B3E2CE1675A002B9DF1 /* AppState.swift */; };
+		DA102B412CE2FC74002B9DF1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA102B402CE2FC74002B9DF1 /* DashboardView.swift */; };
 		DADA6F722CBDEF8C00DE6808 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F632CBDEF8C00DE6808 /* Persistence.swift */; };
 		DADA6F732CBDEF8C00DE6808 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F672CBDEF8C00DE6808 /* LoginView.swift */; };
 		DADA6F742CBDEF8C00DE6808 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F682CBDEF8C00DE6808 /* OnboardingView.swift */; };
@@ -49,6 +50,7 @@
 		C6509C3641335F927D248E99 /* Pods-ChallengeAI-ChallengeAIUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChallengeAI-ChallengeAIUITests.release.xcconfig"; path = "Target Support Files/Pods-ChallengeAI-ChallengeAIUITests/Pods-ChallengeAI-ChallengeAIUITests.release.xcconfig"; sourceTree = "<group>"; };
 		DA102B3C2CE15E2C002B9DF1 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		DA102B3E2CE1675A002B9DF1 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		DA102B402CE2FC74002B9DF1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		DAADC9582CACB5AC00B3695C /* ChallengeAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChallengeAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAADC96E2CACB5AE00B3695C /* ChallengeAITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChallengeAITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAADC9782CACB5AF00B3695C /* ChallengeAIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChallengeAIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -175,6 +177,8 @@
 				DADA6F682CBDEF8C00DE6808 /* OnboardingView.swift */,
 				DA102B3C2CE15E2C002B9DF1 /* WelcomeView.swift */,
 				DA102B3E2CE1675A002B9DF1 /* AppState.swift */,
+				DADA6F6F2CBDEF8C00DE6808 /* ChallengeAIApp.swift */,
+				DA102B402CE2FC74002B9DF1 /* DashboardView.swift */,
 			);
 			path = "View ";
 			sourceTree = "<group>";
@@ -197,7 +201,6 @@
 				DADA6F6C2CBDEF8C00DE6808 /* Assets.xcassets */,
 				DADA6F6D2CBDEF8C00DE6808 /* ChallengeAI.entitlements */,
 				DADA6F6E2CBDEF8C00DE6808 /* ChallengeAI.xcdatamodeld */,
-				DADA6F6F2CBDEF8C00DE6808 /* ChallengeAIApp.swift */,
 			);
 			path = ChallengeAI;
 			sourceTree = "<group>";
@@ -444,6 +447,7 @@
 				DADA6F732CBDEF8C00DE6808 /* LoginView.swift in Sources */,
 				DADA6F742CBDEF8C00DE6808 /* OnboardingView.swift in Sources */,
 				DA102B3F2CE1675A002B9DF1 /* AppState.swift in Sources */,
+				DA102B412CE2FC74002B9DF1 /* DashboardView.swift in Sources */,
 				DADA6F752CBDEF8C00DE6808 /* ContentView.swift in Sources */,
 				DADA6F762CBDEF8C00DE6808 /* ChallengeAI.xcdatamodeld in Sources */,
 				DADA6F772CBDEF8C00DE6808 /* ChallengeAIApp.swift in Sources */,

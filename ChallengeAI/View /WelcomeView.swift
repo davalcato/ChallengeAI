@@ -7,46 +7,44 @@
 
 import SwiftUI
 
-// Simple WelcomeView
 struct WelcomeView: View {
     @EnvironmentObject var appState: AppState
+    @State private var navigateToDashboard = false // State to trigger navigation
 
     var body: some View {
-        ZStack {
+        NavigationView {
             VStack {
-                Spacer() // Pushes content towards the top
+                // Title at the top
+                Spacer()
 
-                // Title at the top, centered horizontally
                 Text("Welcome to the Dashboard")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .padding(.top, 40) // Adjust top padding as needed
-                    .frame(maxWidth: .infinity, alignment: .center)
+                    .multilineTextAlignment(.center)
+                    .padding()
 
-                Spacer() // Adds space between the title and the button
-
-                // Button centered in the middle, just below the title
-                Button(action: {
-                    // Navigate to another view or the actual dashboard
-                }) {
-                    Text("Go to Dashboard")
-                        .font(.title2)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .padding()
-
-                Spacer() // Pushes the button upwards to stay centered
-            }
-
-            // Logout button in the top-right corner
-            VStack {
-                HStack {
-                    Spacer() // Pushes the logout button to the right
+                // Go to Dashboard Button centered
+                NavigationLink(destination: DashboardView(), isActive: $navigateToDashboard) {
                     Button(action: {
-                        // Log the user out
+                        navigateToDashboard = true
+                    }) {
+                        Text("Go to Dashboard")
+                            .font(.title2)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    .padding(.horizontal, 50)
+                }
+
+                Spacer()
+
+                // Logout button in the top-right corner
+                HStack {
+                    Spacer()
+                    Button(action: {
                         appState.isLoggedIn = false
                     }) {
                         Text("Logout")
@@ -54,11 +52,12 @@ struct WelcomeView: View {
                             .padding()
                     }
                 }
-                Spacer() // Ensures that the logout button is at the top
             }
+            .padding()
         }
     }
 }
+
 
 private let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
