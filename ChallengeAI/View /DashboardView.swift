@@ -31,9 +31,10 @@ struct DashboardView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Dashboard")
+        // Remove the .navigationTitle from here
     }
 }
+
 
 
 #Preview {
