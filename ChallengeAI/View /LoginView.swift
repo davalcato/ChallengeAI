@@ -113,14 +113,12 @@ struct LoginView: View {
                                     if success {
                                         navigateToWelcome = true // Trigger navigation on success
                                     } else {
-                                        print("Registration failed")
                                         showFailureMessage = true
                                         showSuccessMessage = false
                                     }
                                 }
                             }
                         } else {
-                            loginData.errorMessage = "Please make sure all fields are filled and passwords match."
                             showErrorAlert = true
                         }
                     } else {
@@ -136,7 +134,6 @@ struct LoginView: View {
                                 }
                             }
                         } else {
-                            loginData.errorMessage = "Email and password cannot be empty."
                             showErrorAlert = true
                         }
                     }
@@ -245,8 +242,6 @@ struct LoginView: View {
     }
 }
 
-
-// Assuming you have a LoginData model
 class LoginData: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
@@ -256,26 +251,65 @@ class LoginData: ObservableObject {
     @Published var showReEnterPassword: Bool = false
     @Published var errorMessage: String = ""
 
-    func registerUserValid() -> Bool {
-        // Implement validation logic
-        return !email.isEmpty && !password.isEmpty && (password == reEnterPassword)
+    // Helper method to validate email format using regex
+    func isValidEmail(_ email: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluate(with: email)
     }
 
+    // Helper method to check password length
+    func isPasswordLengthValid(_ password: String) -> Bool {
+        return password.count >= 6
+    }
+
+    // Method to validate login credentials
     func loginUserValid() -> Bool {
-        // Implement validation logic
-        return !email.isEmpty && !password.isEmpty
+        if email.isEmpty || password.isEmpty {
+            errorMessage = "Email and password cannot be empty."
+            return false
+        } else if !isValidEmail(email) {
+            errorMessage = "Invalid email format."
+            return false
+        } else if !isPasswordLengthValid(password) {
+            errorMessage = "Password must be at least 6 characters long."
+            return false
+        }
+        return true
     }
 
+    // Method to validate registration credentials
+    func registerUserValid() -> Bool {
+        if email.isEmpty || password.isEmpty || reEnterPassword.isEmpty {
+            errorMessage = "Please fill out all fields."
+            return false
+        } else if !isValidEmail(email) {
+            errorMessage = "Invalid email format."
+            return false
+        } else if !isPasswordLengthValid(password) {
+            errorMessage = "Password must be at least 6 characters long."
+            return false
+        } else if password != reEnterPassword {
+            errorMessage = "Passwords do not match."
+            return false
+        }
+        return true
+    }
+
+    // Simulate registration logic
     func register(completion: (Bool) -> Void) {
-        // Simulate registration logic
+        // Here you can simulate failure for testing purposes
         completion(true)
     }
 
+    // Simulate login logic
     func login(completion: (Bool) -> Void) {
-        // Simulate login logic
+        // Simulate a login failure for testing purposes
         completion(true)
     }
 }
+
+
 
 
 // Assuming you have an AppState model
