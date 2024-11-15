@@ -7,6 +7,7 @@
 
 import SwiftUI
 import KeychainSwift
+import FirebaseAuth
 
 // CustomTextField Component
 struct CustomTextField: View {
@@ -55,6 +56,7 @@ struct LoginView: View {
     @State private var showSuccessMessage = false
     @State private var showFailureMessage = false
     @State private var navigateToWelcome = false // State to trigger navigation
+    @State private var showForgotPassword = false // State to show Forgot Password view
 
     var body: some View {
         NavigationView {
@@ -225,6 +227,19 @@ struct LoginView: View {
                         .foregroundColor(.blue)
                         .padding(.top, 10)
                         .cornerRadius(8)
+                }
+
+                // Forgot Password Button
+                Button(action: {
+                    // Show the Forgot Password view
+                    showForgotPassword.toggle()
+                }) {
+                    Text("Forgot Password?")
+                        .foregroundColor(.blue)
+                        .padding(.top, 10)
+                }
+                .sheet(isPresented: $showForgotPassword) {
+                    ForgotPasswordView(showForgotPassword: $showForgotPassword)
                 }
 
                 Spacer()

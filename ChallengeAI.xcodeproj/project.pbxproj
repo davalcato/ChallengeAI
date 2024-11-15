@@ -20,6 +20,7 @@
 		DADA6F772CBDEF8C00DE6808 /* ChallengeAIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F6F2CBDEF8C00DE6808 /* ChallengeAIApp.swift */; };
 		DADA6F782CBDEF8C00DE6808 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DADA6F652CBDEF8C00DE6808 /* Preview Assets.xcassets */; };
 		DADA6F792CBDEF8C00DE6808 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DADA6F6C2CBDEF8C00DE6808 /* Assets.xcassets */; };
+		DADAAE492CE7EC6200E47B1B /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADAAE482CE7EC6200E47B1B /* ForgotPasswordView.swift */; };
 		FAF65996312EFB6549BB1F2C /* Pods_ChallengeAI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B735079E21F5CF0221CF01 /* Pods_ChallengeAI.framework */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,7 @@
 		DADA6F6D2CBDEF8C00DE6808 /* ChallengeAI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChallengeAI.entitlements; sourceTree = "<group>"; };
 		DADA6F6F2CBDEF8C00DE6808 /* ChallengeAIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeAIApp.swift; sourceTree = "<group>"; };
 		DADA6F712CBDEF8C00DE6808 /* ChallengeAI.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChallengeAI.xcdatamodel; sourceTree = "<group>"; };
+		DADAAE482CE7EC6200E47B1B /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		F2B735079E21F5CF0221CF01 /* Pods_ChallengeAI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChallengeAI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFECD44F003D3F8EBE28AC82 /* Pods-ChallengeAI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChallengeAI.release.xcconfig"; path = "Target Support Files/Pods-ChallengeAI/Pods-ChallengeAI.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -179,6 +181,7 @@
 				DA102B3E2CE1675A002B9DF1 /* AppState.swift */,
 				DADA6F6F2CBDEF8C00DE6808 /* ChallengeAIApp.swift */,
 				DA102B402CE2FC74002B9DF1 /* DashboardView.swift */,
+				DADAAE482CE7EC6200E47B1B /* ForgotPasswordView.swift */,
 			);
 			path = "View ";
 			sourceTree = "<group>";
@@ -451,6 +454,7 @@
 				DADA6F752CBDEF8C00DE6808 /* ContentView.swift in Sources */,
 				DADA6F762CBDEF8C00DE6808 /* ChallengeAI.xcdatamodeld in Sources */,
 				DADA6F772CBDEF8C00DE6808 /* ChallengeAIApp.swift in Sources */,
+				DADAAE492CE7EC6200E47B1B /* ForgotPasswordView.swift in Sources */,
 				DA102B3D2CE15E2C002B9DF1 /* WelcomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
