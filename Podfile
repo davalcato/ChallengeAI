@@ -8,6 +8,9 @@ target 'ChallengeAI' do
   # Pods for ChallengeAI
   pod 'Alamofire', '~> 5.4'  # Example dependency, add your actual ones
   pod 'KeychainSwift'
+  # Firebase SDK dependencies
+  pod 'Firebase/Auth'
+  pod 'Firebase/Core'
 
   target 'ChallengeAITests' do
     inherit! :search_paths
