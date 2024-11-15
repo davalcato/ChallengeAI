@@ -7,6 +7,7 @@ target 'ChallengeAI' do
 
   # Pods for ChallengeAI
   pod 'Alamofire', '~> 5.4'  # Example dependency, add your actual ones
+  pod 'KeychainSwift'
 
   target 'ChallengeAITests' do
     inherit! :search_paths

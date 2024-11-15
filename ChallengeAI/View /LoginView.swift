@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import KeychainSwift
 
 // CustomTextField Component
 struct CustomTextField: View {
@@ -242,18 +243,18 @@ struct LoginView: View {
     }
 }
 
+
 class LoginData: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var reEnterPassword: String = ""
-    @Published var registerUser: Bool = false
     @Published var showPassword: Bool = false
     @Published var showReEnterPassword: Bool = false
     @Published var errorMessage: String = ""
+    @Published var isLoggedIn: Bool = false
+    @Published var registerUser: Bool = false
 
-    // Variables to store registered credentials
-    @Published var registeredEmail: String? = nil
-    @Published var registeredPassword: String? = nil
+    private let keychain = KeychainSwift()
 
     // Helper method to validate email format using regex
     func isValidEmail(_ email: String) -> Bool {
@@ -265,29 +266,6 @@ class LoginData: ObservableObject {
     // Helper method to check password length
     func isPasswordLengthValid(_ password: String) -> Bool {
         return password.count >= 6
-    }
-
-    // Method to validate login credentials
-    func loginUserValid() -> Bool {
-        if email.isEmpty || password.isEmpty {
-            errorMessage = "Email and password cannot be empty."
-            return false
-        } else if !isValidEmail(email) {
-            errorMessage = "Invalid email format."
-            return false
-        } else if !isPasswordLengthValid(password) {
-            errorMessage = "Password must be at least 6 characters long."
-            return false
-        } else if email != registeredEmail || password != registeredPassword {
-            errorMessage = "Incorrect email or password."
-            // Debugging print statements
-            print("Login email entered: \(email)")
-            print("Login password entered: \(password)")
-            print("Stored email: \(registeredEmail ?? "None")")
-            print("Stored password: \(registeredPassword ?? "None")")
-            return false
-        }
-        return true
     }
 
     // Method to validate registration credentials
@@ -308,32 +286,69 @@ class LoginData: ObservableObject {
         return true
     }
 
-    // Simulate registration logic
-    func register(completion: (Bool) -> Void) {
-        // Validate the registration form before storing values
+    // Method to validate login credentials
+    func loginUserValid() -> Bool {
+        if email.isEmpty || password.isEmpty {
+            errorMessage = "Email and password cannot be empty."
+            return false
+        } else if !isValidEmail(email) {
+            errorMessage = "Invalid email format."
+            return false
+        } else if !isPasswordLengthValid(password) {
+            errorMessage = "Password must be at least 6 characters long."
+            return false
+        }
+        return true
+    }
+
+    // Register user with Keychain storage
+    func register(completion: @escaping (Bool) -> Void) {
         if registerUserValid() {
-            // Save the registered email and password
-            registeredEmail = email
-            registeredPassword = password
-            // Debugging print statements
-            print("Registration email: \(registeredEmail ?? "None")")
-            print("Registration password: \(registeredPassword ?? "None")")
+            // Storing credentials securely using Keychain
+            keychain.set(email, forKey: "email")
+            keychain.set(password, forKey: "password")
+            print("Registration successful: \(email)")
             completion(true)
         } else {
             completion(false)
         }
     }
 
-    // Simulate login logic
-    func login(completion: (Bool) -> Void) {
-        // Check if the entered credentials match the registered credentials
+    // Login user by checking credentials against stored Keychain values
+    func login(completion: @escaping (Bool) -> Void) {
+        // Retrieve stored credentials from Keychain
+        guard let storedEmail = keychain.get("email"), let storedPassword = keychain.get("password") else {
+            errorMessage = "No stored credentials found. Please register first."
+            completion(false)
+            return
+        }
+
+        // Validate entered email and password
         if loginUserValid() {
-            completion(true)
+            // Check if the entered credentials match the stored credentials
+            if email == storedEmail && password == storedPassword {
+                isLoggedIn = true
+                print("Login successful!")
+                completion(true)
+            } else {
+                errorMessage = "Incorrect email or password. Please try again."
+                print("Login failed: \(email)")
+                completion(false)
+            }
         } else {
             completion(false)
         }
     }
+
+    // Method to clear stored credentials (for logout or account deletion)
+    func clearCredentials() {
+        keychain.delete("email")
+        keychain.delete("password")
+        isLoggedIn = false
+        print("Credentials cleared from Keychain.")
+    }
 }
+
 
 
 
