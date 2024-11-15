@@ -251,6 +251,10 @@ class LoginData: ObservableObject {
     @Published var showReEnterPassword: Bool = false
     @Published var errorMessage: String = ""
 
+    // Variables to store registered credentials
+    @Published var registeredEmail: String? = nil
+    @Published var registeredPassword: String? = nil
+
     // Helper method to validate email format using regex
     func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
@@ -273,6 +277,14 @@ class LoginData: ObservableObject {
             return false
         } else if !isPasswordLengthValid(password) {
             errorMessage = "Password must be at least 6 characters long."
+            return false
+        } else if email != registeredEmail || password != registeredPassword {
+            errorMessage = "Incorrect email or password."
+            // Debugging print statements
+            print("Login email entered: \(email)")
+            print("Login password entered: \(password)")
+            print("Stored email: \(registeredEmail ?? "None")")
+            print("Stored password: \(registeredPassword ?? "None")")
             return false
         }
         return true
@@ -298,16 +310,32 @@ class LoginData: ObservableObject {
 
     // Simulate registration logic
     func register(completion: (Bool) -> Void) {
-        // Here you can simulate failure for testing purposes
-        completion(true)
+        // Validate the registration form before storing values
+        if registerUserValid() {
+            // Save the registered email and password
+            registeredEmail = email
+            registeredPassword = password
+            // Debugging print statements
+            print("Registration email: \(registeredEmail ?? "None")")
+            print("Registration password: \(registeredPassword ?? "None")")
+            completion(true)
+        } else {
+            completion(false)
+        }
     }
 
     // Simulate login logic
     func login(completion: (Bool) -> Void) {
-        // Simulate a login failure for testing purposes
-        completion(true)
+        // Check if the entered credentials match the registered credentials
+        if loginUserValid() {
+            completion(true)
+        } else {
+            completion(false)
+        }
     }
 }
+
+
 
 
 
