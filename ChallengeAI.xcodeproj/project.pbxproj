@@ -28,6 +28,10 @@
 		DADAAE542CE8054700E47B1B /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADAAE532CE8054700E47B1B /* PreferencesView.swift */; };
 		DADAAE562CE8068C00E47B1B /* Challenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADAAE552CE8068C00E47B1B /* Challenge.swift */; };
 		DADAAE582CE806E000E47B1B /* AIChallengeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADAAE572CE806E000E47B1B /* AIChallengeService.swift */; };
+		DADAAE5A2CE8393D00E47B1B /* MainAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADAAE592CE8393D00E47B1B /* MainAppView.swift */; };
+		DADAAE5F2CE84AB800E47B1B /* LoginData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADAAE5E2CE84AB800E47B1B /* LoginData.swift */; };
+		DADAAE612CE84D1000E47B1B /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADAAE602CE84D1000E47B1B /* PreferencesViewModel.swift */; };
+		DADAAE632CE8518200E47B1B /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADAAE622CE8518200E47B1B /* ProfileView.swift */; };
 		FAF65996312EFB6549BB1F2C /* Pods_ChallengeAI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B735079E21F5CF0221CF01 /* Pods_ChallengeAI.framework */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +83,10 @@
 		DADAAE532CE8054700E47B1B /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		DADAAE552CE8068C00E47B1B /* Challenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge.swift; sourceTree = "<group>"; };
 		DADAAE572CE806E000E47B1B /* AIChallengeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIChallengeService.swift; sourceTree = "<group>"; };
+		DADAAE592CE8393D00E47B1B /* MainAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAppView.swift; sourceTree = "<group>"; };
+		DADAAE5E2CE84AB800E47B1B /* LoginData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginData.swift; sourceTree = "<group>"; };
+		DADAAE602CE84D1000E47B1B /* PreferencesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewModel.swift; sourceTree = "<group>"; };
+		DADAAE622CE8518200E47B1B /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		F2B735079E21F5CF0221CF01 /* Pods_ChallengeAI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChallengeAI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFECD44F003D3F8EBE28AC82 /* Pods-ChallengeAI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChallengeAI.release.xcconfig"; path = "Target Support Files/Pods-ChallengeAI/Pods-ChallengeAI.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -177,6 +185,7 @@
 				DADAAE4A2CE802CD00E47B1B /* UserPreferences.swift */,
 				DADAAE552CE8068C00E47B1B /* Challenge.swift */,
 				DADAAE572CE806E000E47B1B /* AIChallengeService.swift */,
+				DADAAE602CE84D1000E47B1B /* PreferencesViewModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -200,6 +209,8 @@
 				DA102B402CE2FC74002B9DF1 /* DashboardView.swift */,
 				DADAAE482CE7EC6200E47B1B /* ForgotPasswordView.swift */,
 				DADAAE4F2CE8034300E47B1B /* ChallengesView.swift */,
+				DADAAE592CE8393D00E47B1B /* MainAppView.swift */,
+				DADAAE622CE8518200E47B1B /* ProfileView.swift */,
 			);
 			path = "View ";
 			sourceTree = "<group>";
@@ -215,11 +226,12 @@
 		DADA6F702CBDEF8C00DE6808 /* ChallengeAI */ = {
 			isa = PBXGroup;
 			children = (
+				DADAAE5D2CE84A7A00E47B1B /* Helpers */,
 				DADAAE4C2CE802FB00E47B1B /* Services */,
 				DADA6F642CBDEF8C00DE6808 /* Model */,
-				DADA6F662CBDEF8C00DE6808 /* Preview Content */,
 				DADA6F692CBDEF8C00DE6808 /* View  */,
 				DADA6F6B2CBDEF8C00DE6808 /* ViewModel */,
+				DADA6F662CBDEF8C00DE6808 /* Preview Content */,
 				DADA6F6C2CBDEF8C00DE6808 /* Assets.xcassets */,
 				DADA6F6D2CBDEF8C00DE6808 /* ChallengeAI.entitlements */,
 				DADA6F6E2CBDEF8C00DE6808 /* ChallengeAI.xcdatamodeld */,
@@ -235,6 +247,14 @@
 				DADAAE532CE8054700E47B1B /* PreferencesView.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		DADAAE5D2CE84A7A00E47B1B /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				DADAAE5E2CE84AB800E47B1B /* LoginData.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -486,11 +506,15 @@
 				DADA6F762CBDEF8C00DE6808 /* ChallengeAI.xcdatamodeld in Sources */,
 				DADA6F772CBDEF8C00DE6808 /* ChallengeAIApp.swift in Sources */,
 				DADAAE542CE8054700E47B1B /* PreferencesView.swift in Sources */,
+				DADAAE612CE84D1000E47B1B /* PreferencesViewModel.swift in Sources */,
 				DADAAE492CE7EC6200E47B1B /* ForgotPasswordView.swift in Sources */,
 				DA102B3D2CE15E2C002B9DF1 /* WelcomeView.swift in Sources */,
+				DADAAE5A2CE8393D00E47B1B /* MainAppView.swift in Sources */,
 				DADAAE562CE8068C00E47B1B /* Challenge.swift in Sources */,
+				DADAAE5F2CE84AB800E47B1B /* LoginData.swift in Sources */,
 				DADAAE582CE806E000E47B1B /* AIChallengeService.swift in Sources */,
 				DADAAE4B2CE802CD00E47B1B /* UserPreferences.swift in Sources */,
+				DADAAE632CE8518200E47B1B /* ProfileView.swift in Sources */,
 				DADAAE502CE8034300E47B1B /* ChallengesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

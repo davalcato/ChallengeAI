@@ -17,7 +17,52 @@ class AppState: ObservableObject {
     }
 }
 
+// UserPreferencesService: Handles loading and saving preferences
+struct UserPreferencesService {
+    static func loadUserPreferences() -> UserPreferences {
+        // Replace with actual data source (e.g., JSON file, UserDefaults)
+        let json = """
+        {
+            "difficulty": "Medium",
+            "topics": ["Math", "Science"],
+            "challengeType": "Multiple Choice",
+            "frequency": "Weekly"
+        }
+        """.data(using: .utf8)!
+        
+        let decoder = JSONDecoder()
+        return (try? decoder.decode(UserPreferences.self, from: json))
+            ?? UserPreferences(difficulty: "Easy", topics: ["General Knowledge"], challengeType: "Text", frequency: "Daily")
+    }
+}
 
-//#Preview {
-//    AppState(isLoggedIn: true)as! any View
-//}
+
+// AppRootView: Main entry point for the app
+struct AppRootView: View {
+    @StateObject private var appState = AppState(isLoggedIn: false) // Initialize AppState
+    @State private var userPreferences: UserPreferences
+
+    init() {
+        // Load preferences during initialization
+        _userPreferences = State(initialValue: UserPreferencesService.loadUserPreferences())
+    }
+
+    var body: some View {
+        Group {
+            if appState.isLoggedIn {
+                MainAppView(userPreferences: $userPreferences) // Pass user preferences as a binding
+                    .environmentObject(appState) // Pass AppState to MainAppView
+            } else {
+                LoginView() // Login interface
+                    .environmentObject(appState) // Pass AppState to LoginView
+            }
+        }
+    }
+}
+
+#Preview {
+    AppRootView()
+}
+
+
+

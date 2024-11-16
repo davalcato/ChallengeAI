@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct PreferencesView: View {
     @Binding var userPreferences: UserPreferences
     @State private var selectedDifficulty = "Easy"
@@ -67,7 +66,14 @@ struct PreferencesView: View {
                     .cornerRadius(10)
             }
         }
+        .onAppear {
+            // Initialize local states with user preferences
+            selectedDifficulty = userPreferences.difficulty
+            selectedTopics = Set(userPreferences.topics) // Convert Array to Set
+            challengeType = userPreferences.challengeType
+        }
         .onDisappear {
+            // Update userPreferences when leaving the view
             userPreferences.difficulty = selectedDifficulty
             userPreferences.topics = Array(selectedTopics) // Convert Set to Array
             userPreferences.challengeType = challengeType
@@ -81,6 +87,7 @@ struct PreferencesView: View {
         userPreferences.challengeType = challengeType
     }
 }
+
 
 
 

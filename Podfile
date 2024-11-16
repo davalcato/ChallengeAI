@@ -11,6 +11,7 @@ target 'ChallengeAI' do
   # Firebase SDK dependencies
   pod 'Firebase/Auth'
   pod 'Firebase/Core'
+  
 
   target 'ChallengeAITests' do
     inherit! :search_paths

@@ -50,13 +50,14 @@ struct CustomTextField: View {
     }
 }
 
+
 struct LoginView: View {
-    @StateObject private var loginData = LoginData() // Use StateObject for LoginData
+    @StateObject private var loginData = LoginData()
     @State private var showErrorAlert = false
     @State private var showSuccessMessage = false
     @State private var showFailureMessage = false
-    @State private var navigateToWelcome = false // State to trigger navigation
-    @State private var showForgotPassword = false // State to show Forgot Password view
+    @State private var navigateToWelcome = false
+    @State private var showForgotPassword = false
 
     var body: some View {
         NavigationView {
@@ -106,53 +107,18 @@ struct LoginView: View {
                     .padding(.bottom, 20)
                 }
 
-                // Login/Register Button with adjusted hit area
-                Button(action: {
-                    // Handle registration or login action
-                    if loginData.registerUser {
-                        if loginData.registerUserValid() {
-                            loginData.register { success in
-                                DispatchQueue.main.async {
-                                    if success {
-                                        navigateToWelcome = true // Trigger navigation on success
-                                    } else {
-                                        showFailureMessage = true
-                                        showSuccessMessage = false
-                                    }
-                                }
-                            }
-                        } else {
-                            showErrorAlert = true
-                        }
-                    } else {
-                        if loginData.loginUserValid() {
-                            loginData.login { success in
-                                DispatchQueue.main.async {
-                                    if success {
-                                        navigateToWelcome = true // Trigger navigation on success
-                                    } else {
-                                        loginData.errorMessage = "Incorrect email or password."
-                                        showErrorAlert = true
-                                    }
-                                }
-                            }
-                        } else {
-                            showErrorAlert = true
-                        }
-                    }
-                }) {
+                Button(action: handleLoginOrRegister) {
                     Text(loginData.registerUser ? "Register" : "Login")
                         .font(.title3)
                         .fontWeight(.bold)
-                        .padding(.vertical, 15)  // Only vertical padding inside the button
-                        .frame(maxWidth: .infinity)  // Let the button take full width
+                        .padding(.vertical, 15)
+                        .frame(maxWidth: .infinity)
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-                .padding(.horizontal, 50)  // Padding outside the button does not affect hit area
-                .contentShape(Rectangle()) // Ensures only the button is tappable
-
+                .padding(.horizontal, 50)
+                .contentShape(Rectangle())
                 .alert(isPresented: $showErrorAlert) {
                     Alert(title: Text("Error"), message: Text(loginData.errorMessage), dismissButton: .default(Text("OK")))
                 }
@@ -169,71 +135,20 @@ struct LoginView: View {
                         .padding(.top, 10)
                 }
 
-                // NavigationLink to WelcomeView
-                NavigationLink(
-                    destination: WelcomeView(),
-                    isActive: $navigateToWelcome,
-                    label: {
-                        EmptyView() // Hidden NavigationLink
-                    }
-                )
-
-                // Google Sign-In Button (no functionality implemented)
-                Button(action: {
-                    // Implement Google sign-in functionality
-                }) {
-                    HStack {
-                        Image(systemName: "globe")
-                        Text("Sign in with Google")
-                    }
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(width: 300, height: 50)
-                    .background(Color.red)
-                    .cornerRadius(8)
+                NavigationLink(destination: WelcomeView(), isActive: $navigateToWelcome) {
+                    EmptyView()
                 }
-                .padding(.top)
 
-                // Facebook Login Button (no functionality implemented)
-                Button(action: {
-                    // Implement Facebook sign-in functionality
-                }) {
-                    HStack {
-                        Image(systemName: "f.circle")
-                        Text("Sign in with Facebook")
-                    }
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(width: 300, height: 50)
-                    .background(Color.blue)
-                    .cornerRadius(8)
-                }
-                .padding(.top, 10)
+                SocialLoginButtons()
+                    .padding(.top, 10)
 
-                // Toggle between login and registration
-                Button(action: {
-                    withAnimation {
-                        loginData.registerUser.toggle()
-                        // Clear password fields when switching to login
-                        if !loginData.registerUser {
-                            loginData.password = ""
-                            loginData.reEnterPassword = ""
-                        }
-                    }
-                }) {
+                Button(action: toggleRegisterLoginMode) {
                     Text(loginData.registerUser ? "Already have an account? Login" : "Don't have an account? Register")
                         .foregroundColor(.blue)
                         .padding(.top, 10)
-                        .cornerRadius(8)
                 }
 
-                // Forgot Password Button
-                Button(action: {
-                    // Show the Forgot Password view
-                    showForgotPassword.toggle()
-                }) {
+                Button(action: { showForgotPassword.toggle() }) {
                     Text("Forgot Password?")
                         .foregroundColor(.blue)
                         .padding(.top, 10)
@@ -256,116 +171,81 @@ struct LoginView: View {
             )
         }
     }
-}
 
-
-class LoginData: ObservableObject {
-    @Published var email: String = ""
-    @Published var password: String = ""
-    @Published var reEnterPassword: String = ""
-    @Published var showPassword: Bool = false
-    @Published var showReEnterPassword: Bool = false
-    @Published var errorMessage: String = ""
-    @Published var isLoggedIn: Bool = false
-    @Published var registerUser: Bool = false
-
-    private let keychain = KeychainSwift()
-
-    // Helper method to validate email format using regex
-    func isValidEmail(_ email: String) -> Bool {
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
-        return emailTest.evaluate(with: email)
-    }
-
-    // Helper method to check password length
-    func isPasswordLengthValid(_ password: String) -> Bool {
-        return password.count >= 6
-    }
-
-    // Method to validate registration credentials
-    func registerUserValid() -> Bool {
-        if email.isEmpty || password.isEmpty || reEnterPassword.isEmpty {
-            errorMessage = "Please fill out all fields."
-            return false
-        } else if !isValidEmail(email) {
-            errorMessage = "Invalid email format."
-            return false
-        } else if !isPasswordLengthValid(password) {
-            errorMessage = "Password must be at least 6 characters long."
-            return false
-        } else if password != reEnterPassword {
-            errorMessage = "Passwords do not match."
-            return false
-        }
-        return true
-    }
-
-    // Method to validate login credentials
-    func loginUserValid() -> Bool {
-        if email.isEmpty || password.isEmpty {
-            errorMessage = "Email and password cannot be empty."
-            return false
-        } else if !isValidEmail(email) {
-            errorMessage = "Invalid email format."
-            return false
-        } else if !isPasswordLengthValid(password) {
-            errorMessage = "Password must be at least 6 characters long."
-            return false
-        }
-        return true
-    }
-
-    // Register user with Keychain storage
-    func register(completion: @escaping (Bool) -> Void) {
-        if registerUserValid() {
-            // Storing credentials securely using Keychain
-            keychain.set(email, forKey: "email")
-            keychain.set(password, forKey: "password")
-            print("Registration successful: \(email)")
-            completion(true)
-        } else {
-            completion(false)
-        }
-    }
-
-    // Login user by checking credentials against stored Keychain values
-    func login(completion: @escaping (Bool) -> Void) {
-        // Retrieve stored credentials from Keychain
-        guard let storedEmail = keychain.get("email"), let storedPassword = keychain.get("password") else {
-            errorMessage = "No stored credentials found. Please register first."
-            completion(false)
-            return
-        }
-
-        // Validate entered email and password
-        if loginUserValid() {
-            // Check if the entered credentials match the stored credentials
-            if email == storedEmail && password == storedPassword {
-                isLoggedIn = true
-                print("Login successful!")
-                completion(true)
+    private func handleLoginOrRegister() {
+        if loginData.registerUser {
+            if loginData.registerUserValid() {
+                loginData.register { success in
+                    if success {
+                        navigateToWelcome = true
+                    } else {
+                        showFailureMessage = true
+                    }
+                }
             } else {
-                errorMessage = "Incorrect email or password. Please try again."
-                print("Login failed: \(email)")
-                completion(false)
+                showErrorAlert = true
             }
         } else {
-            completion(false)
+            if loginData.loginUserValid() {
+                loginData.login { success in
+                    if success {
+                        navigateToWelcome = true
+                    } else {
+                        showErrorAlert = true
+                    }
+                }
+            } else {
+                showErrorAlert = true
+            }
         }
     }
 
-    // Method to clear stored credentials (for logout or account deletion)
-    func clearCredentials() {
-        keychain.delete("email")
-        keychain.delete("password")
-        isLoggedIn = false
-        print("Credentials cleared from Keychain.")
+    private func toggleRegisterLoginMode() {
+        withAnimation {
+            loginData.registerUser.toggle()
+            if !loginData.registerUser {
+                loginData.password = ""
+                loginData.reEnterPassword = ""
+            }
+        }
     }
 }
 
+struct SocialLoginButtons: View {
+    var body: some View {
+        VStack {
+            Button(action: {
+                // Implement Google sign-in functionality
+            }) {
+                HStack {
+                    Image(systemName: "globe")
+                    Text("Sign in with Google")
+                }
+                .font(.headline)
+                .foregroundColor(.white)
+                .padding()
+                .frame(width: 300, height: 50)
+                .background(Color.red)
+                .cornerRadius(8)
+            }
 
-
+            Button(action: {
+                // Implement Facebook sign-in functionality
+            }) {
+                HStack {
+                    Image(systemName: "f.circle")
+                    Text("Sign in with Facebook")
+                }
+                .font(.headline)
+                .foregroundColor(.white)
+                .padding()
+                .frame(width: 300, height: 50)
+                .background(Color.blue)
+                .cornerRadius(8)
+            }
+        }
+    }
+}
 
 
 
