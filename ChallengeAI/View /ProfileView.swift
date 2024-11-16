@@ -38,13 +38,12 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView(userPreferences: .constant(
-        UserPreferences(
-            difficulty: "Easy",
-            topics: ["General Knowledge"],
-            challengeType: "Text",
-            frequency: "Daily"
-        )
-    ))
+    ProfileView(userPreferences: .constant(UserPreferences(
+        difficulty: "Easy",
+        topics: ["General Knowledge"],
+        challengeType: "Text",
+        frequency: "Daily"
+    )))
 }
+
 
