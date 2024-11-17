@@ -14,10 +14,12 @@ struct DashboardView: View {
     
     var body: some View {
         VStack {
+            // Title at the very top center of the screen
             Text("AI Tasks and Challenges")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .padding()
+                .multilineTextAlignment(.center)
+                .padding(.top, 0) // Push the title to the very top
 
             // Display the generated challenges from AI
             List {
@@ -88,9 +90,7 @@ struct DashboardView: View {
     }
 }
 
-
-
-
 #Preview {
     DashboardView()
 }
+
