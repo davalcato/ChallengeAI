@@ -6,61 +6,79 @@
 //
 
 import SwiftUI
+import AVKit // For video playback
 
 struct DashboardView: View {
     @State private var challenges: [String] = [] // Store AI-generated challenges
     @State private var showChallengeDetails = false
+    @State private var selectedChallenge: String? = nil // Track selected challenge
     @State private var userPreferences = ["Fitness", "Mental Health", "Creativity"] // Example preferences
     
     var body: some View {
-        VStack {
-            // Title at the very top center of the screen
-            Text("AI Tasks and Challenges")
-                .font(.title)
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
-                .padding(.top, 0) // Push the title to the very top
+        NavigationView {
+            VStack {
+                // Title at the very top center of the screen
+                Text("AI Tasks and Challenges")
+                    .font(.title) // Reduced the font size
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 0) // Push the title to the very top
 
-            // Display the generated challenges from AI
-            List {
-                Section(header: Text("Personalized Challenges")) {
-                    ForEach(challenges, id: \.self) { challenge in
-                        Text(challenge)
+                // Display the generated challenges from AI
+                List {
+                    Section(header: Text("Personalized Challenges")) {
+                        ForEach(challenges, id: \.self) { challenge in
+                            Button(action: {
+                                selectedChallenge = challenge
+                                showChallengeDetails = true
+                            }) {
+                                Text(challenge)
+                                    .font(.headline)
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                    }
+
+                    // Example AI tasks
+                    Section(header: Text("AI Tasks")) {
+                        Text("Task 1: AI Text Analysis")
+                        Text("Task 2: Image Recognition Challenge")
                     }
                 }
+                .listStyle(GroupedListStyle())
+                .frame(height: 396)
 
-                // Example AI tasks
-                Section(header: Text("AI Tasks")) {
-                    Text("Task 1: AI Text Analysis")
-                    Text("Task 2: Image Recognition Challenge")
+                Spacer()
+
+                // Button to refresh challenges
+                Button(action: {
+                    fetchPersonalizedChallenges()
+                }) {
+                    Text("Get New Challenges")
+                        .font(.title2)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding(.horizontal, 50)
+
+                Spacer()
+            }
+            .padding()
+            .onAppear {
+                // Fetch challenges when the view first loads
+                fetchPersonalizedChallenges()
+            }
+            .sheet(isPresented: $showChallengeDetails) {
+                // Show details for the selected challenge
+                if let challenge = selectedChallenge {
+                    ChallengeDetailView(challenge: challenge)
                 }
             }
-            .listStyle(GroupedListStyle())
-            .frame(height: 396)
-
-            Spacer()
-
-            // Button to refresh challenges
-            Button(action: {
-                fetchPersonalizedChallenges()
-            }) {
-                Text("Get New Challenges")
-                    .font(.title2)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .padding(.horizontal, 50)
-
-            Spacer()
         }
-        .padding()
-        .onAppear {
-            // Fetch challenges when the view first loads
-            fetchPersonalizedChallenges()
-        }
+        .navigationBarBackButtonHidden(false) // Show the back button to navigate to the WelcomeView
     }
 
     // Fetch AI-generated personalized challenges
@@ -90,7 +108,53 @@ struct DashboardView: View {
     }
 }
 
+struct ChallengeDetailView: View {
+    let challenge: String
+    
+    var body: some View {
+        VStack {
+            Text(challenge)
+                .font(.title)
+                .fontWeight(.bold)
+                .padding()
+
+            // Example: Show video or additional content based on the challenge
+            if challenge.contains("5km run") {
+                Text("Motivational Video")
+                    .font(.headline)
+                    .padding(.bottom, 20)
+                
+                VideoPlayer(player: AVPlayer(url: URL(string: "https://www.example.com/running-video.mp4")!))
+                    .frame(height: 300)
+                    .cornerRadius(10)
+            } else if challenge.contains("meditation") {
+                Text("Meditation Guide")
+                    .font(.headline)
+                    .padding(.bottom, 20)
+                
+                Text("Follow this 10-minute guided meditation to relax and unwind.")
+                    .padding()
+            } else if challenge.contains("art piece") {
+                Text("Creativity Tips")
+                    .font(.headline)
+                    .padding(.bottom, 20)
+                
+                Text("Discover ways to spark your creativity and create a unique art piece.")
+                    .padding()
+            } else {
+                Text("More details coming soon!")
+                    .padding()
+            }
+
+            Spacer()
+        }
+        .padding()
+    }
+}
+
 #Preview {
     DashboardView()
 }
+
+
 
