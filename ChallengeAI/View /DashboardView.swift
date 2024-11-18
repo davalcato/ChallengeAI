@@ -16,7 +16,7 @@ struct DashboardView: View {
         VStack {
             // Title at the very top center of the screen
             Text("AI Tasks and Challenges")
-                .font(.largeTitle)
+                .font(.title)
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
                 .padding(.top, 0) // Push the title to the very top
@@ -36,7 +36,7 @@ struct DashboardView: View {
                 }
             }
             .listStyle(GroupedListStyle())
-            .frame(height: 300)
+            .frame(height: 396)
 
             Spacer()
 
