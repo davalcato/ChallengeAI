@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import AVKit
+import AVFoundation
+import _AVKit_SwiftUI
 
 struct DashboardView: View {
     @State private var challenges: [String] = [] // Store AI-generated challenges
@@ -14,81 +15,78 @@ struct DashboardView: View {
     @State private var selectedChallenge: String? = nil // Track selected challenge
     @State private var userPreferences = ["Fitness", "Mental Health", "Creativity"] // Example preferences
     @State private var completedChallenges = 2 // Example: Number of completed challenges
-    
+
     var body: some View {
-        NavigationView {
-            ZStack {
-                // Dynamic gradient background
-                LinearGradient(
-                    colors: [Color.blue.opacity(0.6), Color.purple.opacity(0.6)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+        ZStack {
+            // Dynamic gradient background
+            LinearGradient(
+                colors: [Color.blue.opacity(0.6), Color.purple.opacity(0.6)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
+            VStack {
+                // Title and progress tracking
+                Text("AI Tasks and Challenges")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white)
+                    .padding(.top, 40)
                 
-                VStack {
-                    // Title and progress tracking
-                    Text("AI Tasks and Challenges")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.white)
-                        .padding(.top, 40)
-                    
-                    Text("\(completedChallenges)/\(challenges.count) Challenges Completed")
-                        .font(.headline)
-                        .foregroundColor(.white.opacity(0.8))
-                        .padding(.bottom, 20)
+                Text("\(completedChallenges)/\(challenges.count) Challenges Completed")
+                    .font(.headline)
+                    .foregroundColor(.white.opacity(0.8))
+                    .padding(.bottom, 20)
 
-                    // Display challenges as swipeable cards
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 20) {
-                            ForEach(challenges, id: \.self) { challenge in
-                                ChallengeCard(
-                                    challenge: challenge,
-                                    onCardTapped: {
-                                        selectedChallenge = challenge
-                                        showChallengeDetails = true
-                                    }
-                                )
-                            }
+                // Display challenges as swipeable cards
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 20) {
+                        ForEach(challenges, id: \.self) { challenge in
+                            ChallengeCard(
+                                challenge: challenge,
+                                onCardTapped: {
+                                    selectedChallenge = challenge
+                                    showChallengeDetails = true
+                                }
+                            )
                         }
-                        .padding(.horizontal)
                     }
-                    .frame(height: 250)
-
-                    Spacer()
-
-                    // Button to refresh challenges
-                    Button(action: {
-                        fetchPersonalizedChallenges()
-                    }) {
-                        Text("Get New Challenges")
-                            .font(.title2)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.white)
-                            .foregroundColor(Color.blue)
-                            .cornerRadius(15)
-                    }
-                    .padding(.horizontal, 40)
-
-                    Spacer()
+                    .padding(.horizontal)
                 }
-            }
-            .onAppear {
-                // Fetch challenges when the view first loads
-                fetchPersonalizedChallenges()
-            }
-            .sheet(isPresented: $showChallengeDetails) {
-                if let challenge = selectedChallenge {
-                    ChallengeDetailView(challenge: challenge, onComplete: {
-                        completedChallenges += 1
-                    })
+                .frame(height: 250)
+
+                Spacer()
+
+                // Button to refresh challenges
+                Button(action: {
+                    fetchPersonalizedChallenges()
+                }) {
+                    Text("Get New Challenges")
+                        .font(.title2)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.white)
+                        .foregroundColor(Color.blue)
+                        .cornerRadius(15)
                 }
+                .padding(.horizontal, 40)
+
+                Spacer()
             }
         }
-        .navigationBarHidden(true) // Hide the back button for a cleaner look
+        .onAppear {
+            // Fetch challenges when the view first loads
+            fetchPersonalizedChallenges()
+        }
+        .sheet(isPresented: $showChallengeDetails) {
+            if let challenge = selectedChallenge {
+                ChallengeDetailView(challenge: challenge, onComplete: {
+                    completedChallenges += 1
+                })
+            }
+        }
     }
 
     // Fetch AI-generated personalized challenges
@@ -118,10 +116,11 @@ struct DashboardView: View {
     }
 }
 
+
 struct ChallengeCard: View {
     let challenge: String
     let onCardTapped: () -> Void
-    
+
     var body: some View {
         VStack {
             Text(challenge)
@@ -129,9 +128,9 @@ struct ChallengeCard: View {
                 .foregroundColor(.white)
                 .multilineTextAlignment(.center)
                 .padding()
-            
+
             Spacer()
-            
+
             Button(action: onCardTapped) {
                 Text("View Details")
                     .font(.subheadline)
@@ -156,7 +155,7 @@ struct ChallengeDetailView: View {
     let challenge: String
     let onComplete: () -> Void
     @State private var isCompleted = false
-    
+
     var body: some View {
         VStack {
             Text(challenge)
@@ -164,12 +163,12 @@ struct ChallengeDetailView: View {
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
                 .padding()
-            
+
             if challenge.contains("5km run") {
                 Text("Motivational Video")
                     .font(.headline)
                     .padding(.bottom, 20)
-                
+
                 VideoPlayer(player: AVPlayer(url: URL(string: "https://www.example.com/running-video.mp4")!))
                     .frame(height: 300)
                     .cornerRadius(10)
@@ -177,14 +176,14 @@ struct ChallengeDetailView: View {
                 Text("Meditation Guide")
                     .font(.headline)
                     .padding(.bottom, 20)
-                
+
                 Text("Follow this 10-minute guided meditation to relax and unwind.")
                     .padding()
             } else if challenge.contains("art piece") {
                 Text("Creativity Tips")
                     .font(.headline)
                     .padding(.bottom, 20)
-                
+
                 Text("Discover ways to spark your creativity and create a unique art piece.")
                     .padding()
             } else {
@@ -218,6 +217,7 @@ struct ChallengeDetailView: View {
 #Preview {
     DashboardView()
 }
+
 
 
 

@@ -45,7 +45,7 @@ struct WelcomeView: View {
                     
                     Spacer()
                     
-                    // Centered "Go to Dashboard" Button
+                    // NavigationLink to DashboardView
                     NavigationLink(destination: DashboardView()) {
                         Text("Go to Dashboard")
                             .font(.title2)
@@ -69,7 +69,6 @@ struct WelcomeView: View {
                 .sheet(isPresented: $showProfileView) {
                     ProfileView(userPreferences: $userPreferences) // ProfileView presented as a sheet
                 }
-                .navigationBarHidden(true) // Hide the default navigation bar
                 .padding()
             }
         } else {
@@ -82,5 +81,7 @@ struct WelcomeView: View {
     WelcomeView()
         .environmentObject(AppState(isLoggedIn: true))
 }
+
+
 
 
