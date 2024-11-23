@@ -7,14 +7,13 @@
 
 import SwiftUI
 import AVFoundation
-import _AVKit_SwiftUI
 
 struct DashboardView: View {
     @State private var challenges: [String] = [] // Store AI-generated challenges
     @State private var showChallengeDetails = false
     @State private var selectedChallenge: String? = nil // Track selected challenge
     @State private var userPreferences = ["Fitness", "Mental Health", "Creativity"] // Example preferences
-    @State private var completedChallenges = 2 // Example: Number of completed challenges
+    @State private var completedChallenges = 0 // Number of completed challenges
     @State private var isFetchingChallenges = false // State to show/hide spinner
 
     var body: some View {
@@ -26,7 +25,7 @@ struct DashboardView: View {
                 endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
-            
+
             VStack {
                 // Title and progress tracking
                 Text("AI Tasks and Challenges")
@@ -35,7 +34,15 @@ struct DashboardView: View {
                     .multilineTextAlignment(.center)
                     .foregroundColor(.white)
                     .padding(.top, 40)
-                
+
+                // Animated progress bar
+                ProgressView(value: Double(completedChallenges), total: Double(challenges.count))
+                    .progressViewStyle(LinearProgressViewStyle(tint: .green))
+                    .padding(.horizontal, 40)
+                    .frame(height: 10)
+                    .scaleEffect(y: 2)
+                    .animation(.easeInOut, value: completedChallenges)
+
                 Text("\(completedChallenges)/\(challenges.count) Challenges Completed")
                     .font(.headline)
                     .foregroundColor(.white.opacity(0.8))
@@ -47,6 +54,7 @@ struct DashboardView: View {
                         ForEach(challenges, id: \.self) { challenge in
                             ChallengeCard(
                                 challenge: challenge,
+                                isSelected: challenge == selectedChallenge,
                                 onCardTapped: {
                                     selectedChallenge = challenge
                                     showChallengeDetails = true
@@ -89,7 +97,6 @@ struct DashboardView: View {
             }
         }
         .onAppear {
-            // Fetch challenges when the view first loads
             fetchPersonalizedChallenges()
         }
         .sheet(isPresented: $showChallengeDetails) {
@@ -133,10 +140,9 @@ struct DashboardView: View {
     }
 }
 
-
-
 struct ChallengeCard: View {
     let challenge: String
+    let isSelected: Bool
     let onCardTapped: () -> Void
 
     var body: some View {
@@ -160,12 +166,14 @@ struct ChallengeCard: View {
         }
         .frame(width: 200, height: 200)
         .background(LinearGradient(
-            colors: [Color.purple, Color.blue],
+            colors: isSelected ? [Color.orange, Color.red] : [Color.purple, Color.blue],
             startPoint: .top,
             endPoint: .bottom
         ))
         .cornerRadius(15)
-        .shadow(radius: 5)
+        .shadow(radius: isSelected ? 10 : 5)
+        .scaleEffect(isSelected ? 1.1 : 1.0)
+        .animation(.easeInOut, value: isSelected)
     }
 }
 
@@ -175,66 +183,67 @@ struct ChallengeDetailView: View {
     @State private var isCompleted = false
 
     var body: some View {
-        VStack {
-            Text(challenge)
-                .font(.title)
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
-                .padding()
-
-            if challenge.contains("5km run") {
-                Text("Motivational Video")
-                    .font(.headline)
-                    .padding(.bottom, 20)
-
-                VideoPlayer(player: AVPlayer(url: URL(string: "https://www.example.com/running-video.mp4")!))
-                    .frame(height: 300)
-                    .cornerRadius(10)
-            } else if challenge.contains("meditation") {
-                Text("Meditation Guide")
-                    .font(.headline)
-                    .padding(.bottom, 20)
-
-                Text("Follow this 10-minute guided meditation to relax and unwind.")
+        ZStack {
+            VStack {
+                Text(challenge)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
                     .padding()
-            } else if challenge.contains("art piece") {
-                Text("Creativity Tips")
-                    .font(.headline)
-                    .padding(.bottom, 20)
 
-                Text("Discover ways to spark your creativity and create a unique art piece.")
-                    .padding()
-            } else {
-                Text("More details coming soon!")
-                    .padding()
+                Spacer()
+
+                // Complete button with pulse animation
+                Button(action: {
+                    isCompleted = true
+                    onComplete()
+                }) {
+                    Text(isCompleted ? "Challenge Completed!" : "Mark as Complete")
+                        .font(.title3)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(isCompleted ? Color.green : Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(15)
+                        .scaleEffect(isCompleted ? 1.2 : 1.0)
+                        .animation(.easeInOut, value: isCompleted)
+                }
+                .padding(.horizontal, 40)
+                .padding(.bottom, 20)
+
+                if isCompleted {
+                    StarburstEffect()
+                        .frame(width: 200, height: 200)
+                        .offset(y: -150)
+                        .animation(.easeOut(duration: 2.0), value: isCompleted)
+                }
             }
-
-            Spacer()
-
-            // Complete button with confetti
-            Button(action: {
-                isCompleted = true
-                onComplete()
-            }) {
-                Text(isCompleted ? "Challenge Completed!" : "Mark as Complete")
-                    .font(.title3)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(isCompleted ? Color.green : Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(15)
-            }
-            .padding(.horizontal, 40)
-            .padding(.bottom, 20)
-            .animation(.easeInOut, value: isCompleted)
         }
         .padding()
+    }
+}
+
+struct StarburstEffect: View {
+    var body: some View {
+        Canvas { context, size in
+            for _ in 0..<30 {
+                let randomPosition = CGPoint(
+                    x: CGFloat.random(in: 0..<size.width),
+                    y: CGFloat.random(in: 0..<size.height)
+                )
+                context.fill(
+                    Circle().path(in: CGRect(origin: randomPosition, size: CGSize(width: 5, height: 5))),
+                    with: .color(.yellow.opacity(0.8))
+                )
+            }
+        }
     }
 }
 
 #Preview {
     DashboardView()
 }
+
 
 
 
