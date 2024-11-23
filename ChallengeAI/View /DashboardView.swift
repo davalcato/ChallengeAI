@@ -15,7 +15,7 @@ struct DashboardView: View {
     @State private var selectedChallenge: String? = nil // Track selected challenge
     @State private var userPreferences = ["Fitness", "Mental Health", "Creativity"] // Example preferences
     @State private var completedChallenges = 2 // Example: Number of completed challenges
-    @State private var isButtonSpinning = false // State for spinning animation
+    @State private var isFetchingChallenges = false // State to show/hide spinner
 
     var body: some View {
         ZStack {
@@ -61,25 +61,29 @@ struct DashboardView: View {
                 Spacer()
 
                 // Button to refresh challenges
-                Button(action: {
-                    withAnimation(.linear(duration: 0.8).repeatCount(1, autoreverses: false)) {
-                        isButtonSpinning = true
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                        isButtonSpinning = false
-                        fetchPersonalizedChallenges()
-                    }
-                }) {
-                    Text("Get New Challenges")
-                        .font(.title2)
+                if isFetchingChallenges {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .scaleEffect(1.5)
                         .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.white)
-                        .foregroundColor(Color.blue)
-                        .cornerRadius(15)
-                        .rotationEffect(.degrees(isButtonSpinning ? 360 : 0)) // Add spinning effect
+                } else {
+                    Button(action: {
+                        isFetchingChallenges = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            isFetchingChallenges = false
+                            fetchPersonalizedChallenges()
+                        }
+                    }) {
+                        Text("Get New Challenges")
+                            .font(.title2)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.white)
+                            .foregroundColor(Color.blue)
+                            .cornerRadius(15)
+                    }
+                    .padding(.horizontal, 40)
                 }
-                .padding(.horizontal, 40)
 
                 Spacer()
             }
