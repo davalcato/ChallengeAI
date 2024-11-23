@@ -21,8 +21,17 @@ struct WelcomeView: View {
         if #available(iOS 16.0, *) {
             NavigationStack {
                 VStack {
-                    // Top Section with Profile Image
+                    // Top Section with Profile Image and Title
                     HStack {
+                        // Title "ChallengeAI" in bold and italic
+                        Text("ChallengeAI")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .italic()
+                            .foregroundColor(.primary)
+                            .padding(.leading, 16) // Adjust left spacing
+                            .padding(.top, -16) // Align with profile image height
+
                         Spacer()
 
                         // Profile Image Button in the top-right corner
@@ -35,7 +44,7 @@ struct WelcomeView: View {
                                 .foregroundColor(.blue)
                         }
                         .padding(.trailing, 16) // Adjust right spacing
-                        .padding(.top, -16) // Raise the profile image higher
+                        .padding(.top, -16) // Align with title
                     }
 
                     Spacer()
@@ -83,6 +92,7 @@ struct WelcomeView: View {
     WelcomeView()
         .environmentObject(AppState(isLoggedIn: true))
 }
+
 
 
 
