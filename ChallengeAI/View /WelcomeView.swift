@@ -21,16 +21,11 @@ struct WelcomeView: View {
         if #available(iOS 16.0, *) {
             NavigationStack {
                 VStack {
-                    // Top Section with Title and Profile Image
+                    // Top Section with Profile Image
                     HStack {
                         Spacer()
-                        
-                        Text("Welcome to the Dashboard")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                        
-                        // Profile Image Button
+
+                        // Profile Image Button in the top-right corner
                         Button(action: {
                             showProfileView = true
                         }) {
@@ -38,13 +33,20 @@ struct WelcomeView: View {
                                 .resizable()
                                 .frame(width: 40, height: 40)
                                 .foregroundColor(.blue)
-                                .padding(.trailing, 16)
                         }
+                        .padding(.trailing, 16) // Adjust right spacing
+                        .padding(.top, -16) // Raise the profile image higher
                     }
-                    .padding(.top, 16)
-                    
+
                     Spacer()
-                    
+
+                    // Welcome Text pushed down near the Dashboard button
+                    Text("Welcome to the Dashboard")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
+                        .padding(.bottom, 50) // Adjust spacing to move closer to the button
+
                     // NavigationLink to DashboardView
                     NavigationLink(destination: DashboardView()) {
                         Text("Go to Dashboard")
@@ -54,9 +56,9 @@ struct WelcomeView: View {
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
-                    
+
                     Spacer()
-                    
+
                     // Logout Button at Bottom
                     Button(action: {
                         appState.isLoggedIn = false
@@ -81,6 +83,7 @@ struct WelcomeView: View {
     WelcomeView()
         .environmentObject(AppState(isLoggedIn: true))
 }
+
 
 
 
