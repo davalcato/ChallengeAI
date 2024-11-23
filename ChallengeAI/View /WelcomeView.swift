@@ -25,12 +25,12 @@ struct WelcomeView: View {
                     HStack {
                         // Title "ChallengeAI" in bold and italic
                         Text("ChallengeAI")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .italic()
+                            .font(.system(size: 17, weight: .bold, design: .default)) // Custom font with bold weight
+                            .italic() // Ensures italic style is applied
                             .foregroundColor(.primary)
                             .padding(.leading, 16) // Adjust left spacing
                             .padding(.top, -16) // Align with profile image height
+
 
                         Spacer()
 
@@ -40,7 +40,7 @@ struct WelcomeView: View {
                         }) {
                             Image(systemName: "person.circle.fill")
                                 .resizable()
-                                .frame(width: 40, height: 40)
+                                .frame(width: 30, height: 30)
                                 .foregroundColor(.blue)
                         }
                         .padding(.trailing, 16) // Adjust right spacing
