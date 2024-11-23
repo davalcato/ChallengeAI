@@ -15,6 +15,7 @@ struct DashboardView: View {
     @State private var selectedChallenge: String? = nil // Track selected challenge
     @State private var userPreferences = ["Fitness", "Mental Health", "Creativity"] // Example preferences
     @State private var completedChallenges = 2 // Example: Number of completed challenges
+    @State private var isButtonSpinning = false // State for spinning animation
 
     var body: some View {
         ZStack {
@@ -61,7 +62,13 @@ struct DashboardView: View {
 
                 // Button to refresh challenges
                 Button(action: {
-                    fetchPersonalizedChallenges()
+                    withAnimation(.linear(duration: 0.8).repeatCount(1, autoreverses: false)) {
+                        isButtonSpinning = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                        isButtonSpinning = false
+                        fetchPersonalizedChallenges()
+                    }
                 }) {
                     Text("Get New Challenges")
                         .font(.title2)
@@ -70,6 +77,7 @@ struct DashboardView: View {
                         .background(Color.white)
                         .foregroundColor(Color.blue)
                         .cornerRadius(15)
+                        .rotationEffect(.degrees(isButtonSpinning ? 360 : 0)) // Add spinning effect
                 }
                 .padding(.horizontal, 40)
 
@@ -91,7 +99,10 @@ struct DashboardView: View {
 
     // Fetch AI-generated personalized challenges
     func fetchPersonalizedChallenges() {
-        // Call your AI service here. For now, simulate AI response.
+        // Randomize preferences for fun
+        userPreferences = userPreferences.shuffled().map { $0 + " AI" }
+        
+        // Simulate AI response
         let simulatedAIResponse = generateChallengesBasedOnPreferences(userPreferences)
         
         // Update the challenges state
@@ -103,18 +114,21 @@ struct DashboardView: View {
         var challenges: [String] = []
         
         for preference in preferences {
-            if preference == "Fitness" {
+            if preference.contains("Fitness") {
                 challenges.append("Complete a 5km run this week.")
-            } else if preference == "Mental Health" {
+            } else if preference.contains("Mental Health") {
                 challenges.append("Practice meditation for 10 minutes daily.")
-            } else if preference == "Creativity" {
+            } else if preference.contains("Creativity") {
                 challenges.append("Create a new art piece over the weekend.")
+            } else {
+                challenges.append("Explore a new challenge based on \(preference).")
             }
         }
         
         return challenges
     }
 }
+
 
 
 struct ChallengeCard: View {
