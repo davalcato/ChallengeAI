@@ -35,6 +35,7 @@ struct MainAppView: View {
                 // Logout button
                 Button(action: {
                     onLogout() // Call the logout closure
+                    UserDefaults.standard.set(false, forKey: "isLoggedIn") // Update UserDefaults
                     print("Logout button pressed")
                 }) {
                     Text("Logout")
@@ -65,6 +66,7 @@ struct MainAppView: View {
         onLogout: {}
     )
 }
+
 
 
 

@@ -58,6 +58,7 @@ struct LoginView: View {
     @State private var showFailureMessage = false
     @State private var navigateToWelcome = false
     @State private var showForgotPassword = false
+    @EnvironmentObject var appState: AppState
 
     var body: some View {
         VStack {
@@ -175,7 +176,8 @@ struct LoginView: View {
             if loginData.registerUserValid() {
                 loginData.register { success in
                     if success {
-                        navigateToWelcome = true
+                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                        appState.isLoggedIn = true
                     } else {
                         showFailureMessage = true
                     }
@@ -187,7 +189,8 @@ struct LoginView: View {
             if loginData.loginUserValid() {
                 loginData.login { success in
                     if success {
-                        navigateToWelcome = true
+                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                        appState.isLoggedIn = true
                     } else {
                         showErrorAlert = true
                     }

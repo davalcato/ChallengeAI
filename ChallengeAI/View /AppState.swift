@@ -38,11 +38,10 @@ struct UserPreferencesService {
 
 // AppRootView: Main entry point for the app
 struct AppRootView: View {
-    @StateObject private var appState = AppState(isLoggedIn: false) // Initialize AppState
+    @StateObject private var appState = AppState(isLoggedIn: UserDefaults.standard.bool(forKey: "isLoggedIn")) // Sync with UserDefaults
     @State private var userPreferences: UserPreferences
 
     init() {
-        // Load preferences during initialization
         _userPreferences = State(initialValue: UserPreferencesService.loadUserPreferences())
     }
 
@@ -52,17 +51,18 @@ struct AppRootView: View {
                 MainAppView(
                     userPreferences: $userPreferences,
                     onLogout: {
-                        // Log out the user by updating AppState
+                        // Log out the user by updating AppState and UserDefaults
                         withAnimation {
                             appState.isLoggedIn = false
                         }
+                        UserDefaults.standard.set(false, forKey: "isLoggedIn") // Sync logout state
                         print("User logged out")
                     }
                 )
-                .environmentObject(appState) // Pass AppState to MainAppView
+                .environmentObject(appState)
             } else {
                 LoginView() // Login interface
-                    .environmentObject(appState) // Pass AppState to LoginView
+                    .environmentObject(appState)
             }
         }
         .onAppear {
@@ -70,6 +70,7 @@ struct AppRootView: View {
         }
     }
 }
+
 
 #Preview {
     AppRootView()

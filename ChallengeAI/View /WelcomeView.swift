@@ -9,14 +9,14 @@ import SwiftUI
 
 struct WelcomeView: View {
     @EnvironmentObject var appState: AppState
-    @State private var showProfileView = false // State to control ProfileView sheet
+    @State private var showProfileView = false
     @State private var userPreferences = UserPreferences(
         difficulty: "Easy",
         topics: ["General Knowledge"],
         challengeType: "Text",
         frequency: "Daily"
     )
-    @State private var navigateToDashboard = false // State for controlling navigation
+    @State private var navigateToDashboard = false
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -58,12 +58,12 @@ struct WelcomeView: View {
                         destination: DashboardView(),
                         isActive: $navigateToDashboard
                     ) {
-                        EmptyView() // Empty view for manual navigation
+                        EmptyView()
                     }
 
                     // Button to navigate to Dashboard
                     Button(action: {
-                        navigateToDashboard = true // Navigate to Dashboard
+                        navigateToDashboard = true
                     }) {
                         Text("Go to Dashboard")
                             .font(.title2)
@@ -77,11 +77,9 @@ struct WelcomeView: View {
 
                     Spacer()
 
-                    // Logout Button at Bottom
+                    // Logout Button
                     Button(action: {
-                        // Log out and reset the app state
-                        UserDefaults.standard.set(false, forKey: "isLoggedIn")
-                        appState.isLoggedIn = false
+                        handleLogout()
                     }) {
                         Text("Logout")
                             .foregroundColor(.red)
@@ -94,16 +92,23 @@ struct WelcomeView: View {
                 .padding()
             }
         } else {
-            // Fallback for earlier iOS versions
             Text("Your device does not support this feature.")
         }
     }
+
+    private func handleLogout() {
+        UserDefaults.standard.set(false, forKey: "isLoggedIn")
+        appState.isLoggedIn = false
+    }
 }
+
 
 #Preview {
     WelcomeView()
         .environmentObject(AppState(isLoggedIn: UserDefaults.standard.bool(forKey: "isLoggedIn")))
 }
+
+
 
 
 
