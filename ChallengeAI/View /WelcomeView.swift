@@ -16,6 +16,7 @@ struct WelcomeView: View {
         challengeType: "Text",
         frequency: "Daily"
     )
+    @State private var navigateToDashboard = false // State for controlling navigation
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -23,18 +24,15 @@ struct WelcomeView: View {
                 VStack {
                     // Top Section with Profile Image and Title
                     HStack {
-                        // Title "ChallengeAI" in bold and italic
                         Text("ChallengeAI")
-                            .font(.system(size: 17, weight: .bold, design: .default)) // Custom font with bold weight
-                            .italic() // Ensures italic style is applied
+                            .font(.system(size: 17, weight: .bold, design: .default))
+                            .italic()
                             .foregroundColor(.primary)
-                            .padding(.leading, 16) // Adjust left spacing
-                            .padding(.top, -16) // Align with profile image height
-
+                            .padding(.leading, 16)
+                            .padding(.top, -16)
 
                         Spacer()
 
-                        // Profile Image Button in the top-right corner
                         Button(action: {
                             showProfileView = true
                         }) {
@@ -43,33 +41,48 @@ struct WelcomeView: View {
                                 .frame(width: 30, height: 30)
                                 .foregroundColor(.blue)
                         }
-                        .padding(.trailing, 16) // Adjust right spacing
-                        .padding(.top, -16) // Align with title
+                        .padding(.trailing, 16)
+                        .padding(.top, -16)
                     }
 
                     Spacer()
 
-                    // Welcome Text pushed down near the Dashboard button
                     Text("Welcome to the Dashboard")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
-                        .padding(.bottom, 50) // Adjust spacing to move closer to the button
+                        .padding(.bottom, 50)
 
-                    // NavigationLink to DashboardView
-                    NavigationLink(destination: DashboardView()) {
+                    // NavigationLink triggered by state
+                    NavigationLink(
+                        destination: DashboardView(),
+                        isActive: $navigateToDashboard
+                    ) {
+                        EmptyView() // Empty view for manual navigation
+                    }
+
+                    // Button to navigate to Dashboard
+                    Button(action: {
+                        // Set state to navigate to DashboardView
+                        navigateToDashboard = true
+                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                        appState.isLoggedIn = true
+                    }) {
                         Text("Go to Dashboard")
                             .font(.title2)
                             .padding()
+                            .frame(maxWidth: .infinity)
                             .background(Color.blue)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
+                    .padding(.horizontal, 40)
 
                     Spacer()
 
                     // Logout Button at Bottom
                     Button(action: {
+                        UserDefaults.standard.set(false, forKey: "isLoggedIn")
                         appState.isLoggedIn = false
                     }) {
                         Text("Logout")
@@ -78,20 +91,25 @@ struct WelcomeView: View {
                     }
                 }
                 .sheet(isPresented: $showProfileView) {
-                    ProfileView(userPreferences: $userPreferences) // ProfileView presented as a sheet
+                    ProfileView(userPreferences: $userPreferences)
                 }
                 .padding()
             }
         } else {
-            // Fallback on earlier versions
+            // Fallback for earlier iOS versions
+            Text("Your device does not support this feature.")
         }
     }
 }
 
 #Preview {
     WelcomeView()
-        .environmentObject(AppState(isLoggedIn: true))
+        .environmentObject(AppState(isLoggedIn: UserDefaults.standard.bool(forKey: "isLoggedIn")))
 }
+
+
+
+
 
 
 

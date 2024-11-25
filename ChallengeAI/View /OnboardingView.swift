@@ -155,4 +155,5 @@ struct OnboardingPage: View {
 
 #Preview {
     OnboardingView()
+        .environmentObject(AppState(isLoggedIn: false))
 }

@@ -10,14 +10,14 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    
+
     // Fetch items from Core Data
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
     private var items: FetchedResults<Item>
-    
-    @StateObject private var appState = AppState(isLoggedIn: false) // AppState to track login status
+
+    @EnvironmentObject var appState: AppState // Use shared AppState from the parent
     @State private var userPreferences: UserPreferences // User preferences
     @State private var showPreferencesView = false // Control navigation to PreferencesView
 
@@ -57,7 +57,7 @@ struct ContentView: View {
                                     showPreferencesView = false
                                 }
                         } else {
-                            MainAppView(userPreferences: $userPreferences)
+                            MainAppView(userPreferences: $userPreferences, onLogout: logout)
                                 .onAppear {
                                     // Check if preferences are set, otherwise show PreferencesView
                                     if userPreferences.topics.isEmpty || userPreferences.difficulty.isEmpty {
@@ -66,15 +66,22 @@ struct ContentView: View {
                                 }
                         }
                     }
-                    .environmentObject(appState)
                 } else {
                     // Fallback on earlier versions
-                } // Pass the AppState to child views
+                    Text("Unsupported iOS version.")
+                }
             } else {
-                // Show LoginView when the user is not logged in
-                LoginView()
-                    .environmentObject(appState) // Pass the AppState to child views
+                // Show OnboardingView when the user is not logged in
+                OnboardingView()
             }
+        }
+    }
+
+    // Logout function to update AppState and UserDefaults
+    private func logout() {
+        withAnimation {
+            appState.isLoggedIn = false
+            UserDefaults.standard.set(false, forKey: "isLoggedIn")
         }
     }
 
@@ -111,6 +118,9 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(AppState(isLoggedIn: UserDefaults.standard.bool(forKey: "isLoggedIn")))
 }
+
+
 
 

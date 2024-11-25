@@ -10,8 +10,8 @@ import Combine
 
 // AppState model to manage global state
 class AppState: ObservableObject {
-    @Published var isLoggedIn: Bool
-    
+    @Published var isLoggedIn: Bool = true
+
     init(isLoggedIn: Bool) {
         self.isLoggedIn = isLoggedIn
     }
@@ -29,13 +29,12 @@ struct UserPreferencesService {
             "frequency": "Weekly"
         }
         """.data(using: .utf8)!
-        
+
         let decoder = JSONDecoder()
         return (try? decoder.decode(UserPreferences.self, from: json))
             ?? UserPreferences(difficulty: "Easy", topics: ["General Knowledge"], challengeType: "Text", frequency: "Daily")
     }
 }
-
 
 // AppRootView: Main entry point for the app
 struct AppRootView: View {
@@ -50,12 +49,24 @@ struct AppRootView: View {
     var body: some View {
         Group {
             if appState.isLoggedIn {
-                MainAppView(userPreferences: $userPreferences) // Pass user preferences as a binding
-                    .environmentObject(appState) // Pass AppState to MainAppView
+                MainAppView(
+                    userPreferences: $userPreferences,
+                    onLogout: {
+                        // Log out the user by updating AppState
+                        withAnimation {
+                            appState.isLoggedIn = false
+                        }
+                        print("User logged out")
+                    }
+                )
+                .environmentObject(appState) // Pass AppState to MainAppView
             } else {
                 LoginView() // Login interface
                     .environmentObject(appState) // Pass AppState to LoginView
             }
+        }
+        .onAppear {
+            print("AppRootView loaded. Current login state: \(appState.isLoggedIn)")
         }
     }
 }
@@ -63,6 +74,8 @@ struct AppRootView: View {
 #Preview {
     AppRootView()
 }
+
+
 
 
 
