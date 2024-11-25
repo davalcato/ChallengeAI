@@ -63,10 +63,7 @@ struct WelcomeView: View {
 
                     // Button to navigate to Dashboard
                     Button(action: {
-                        // Set state to navigate to DashboardView
-                        navigateToDashboard = true
-                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                        appState.isLoggedIn = true
+                        navigateToDashboard = true // Navigate to Dashboard
                     }) {
                         Text("Go to Dashboard")
                             .font(.title2)
@@ -82,6 +79,7 @@ struct WelcomeView: View {
 
                     // Logout Button at Bottom
                     Button(action: {
+                        // Log out and reset the app state
                         UserDefaults.standard.set(false, forKey: "isLoggedIn")
                         appState.isLoggedIn = false
                     }) {
@@ -106,6 +104,7 @@ struct WelcomeView: View {
     WelcomeView()
         .environmentObject(AppState(isLoggedIn: UserDefaults.standard.bool(forKey: "isLoggedIn")))
 }
+
 
 
 
