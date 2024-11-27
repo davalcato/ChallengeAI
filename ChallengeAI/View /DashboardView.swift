@@ -9,6 +9,7 @@ import SwiftUI
 import AVFoundation
 
 struct DashboardView: View {
+    @Environment(\.presentationMode) var presentationMode // To dismiss the view
     @State private var challenges: [String] = [] // Store AI-generated challenges
     @State private var showChallengeDetails = false
     @State private var selectedChallenge: String? = nil // Track selected challenge
@@ -96,6 +97,14 @@ struct DashboardView: View {
                 Spacer()
             }
         }
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    if value.translation.width > 100 { // Detect right swipe
+                        presentationMode.wrappedValue.dismiss() // Navigate back
+                    }
+                }
+        )
         .onAppear {
             fetchPersonalizedChallenges()
         }
@@ -139,6 +148,7 @@ struct DashboardView: View {
         return challenges
     }
 }
+
 
 struct ChallengeCard: View {
     let challenge: String
