@@ -17,6 +17,7 @@ struct WelcomeView: View {
         frequency: "Daily"
     )
     @State private var navigateToDashboard = false
+    @State private var showLogoutConfirmation = false // State to trigger the alert
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -79,7 +80,7 @@ struct WelcomeView: View {
 
                     // Logout Button
                     Button(action: {
-                        handleLogout()
+                        showLogoutConfirmation = true // Show the confirmation dialog
                     }) {
                         Text("Logout")
                             .foregroundColor(.red)
@@ -90,6 +91,16 @@ struct WelcomeView: View {
                     ProfileView(userPreferences: $userPreferences)
                 }
                 .padding()
+                .confirmationDialog(
+                    "Are you sure you want to Logout?",
+                    isPresented: $showLogoutConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Logout", role: .destructive) {
+                        handleLogout()
+                    }
+                    Button("Cancel", role: .cancel) { }
+                }
             }
         } else {
             Text("Your device does not support this feature.")
@@ -102,11 +113,11 @@ struct WelcomeView: View {
     }
 }
 
-
 #Preview {
     WelcomeView()
         .environmentObject(AppState(isLoggedIn: UserDefaults.standard.bool(forKey: "isLoggedIn")))
 }
+
 
 
 
