@@ -13,22 +13,23 @@ struct ForgotPasswordView: View {
     @State private var email: String = ""
     @State private var successMessage: String = ""
     @State private var errorMessage: String = ""
-    
+
     var body: some View {
         VStack {
-            Text("Reset your password")
+            Text("Reset Your Password")
                 .font(.title)
+                .fontWeight(.bold)
                 .padding()
-            
+
             TextField("Enter your email", text: $email)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .keyboardType(.emailAddress)
-            
-            Button(action: {
-                resetPassword()
-            }) {
-                Text("Reset Password")
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+
+            Button(action: resetPassword) {
+                Text("Send Reset Link")
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.blue)
@@ -36,23 +37,37 @@ struct ForgotPasswordView: View {
                     .cornerRadius(10)
             }
             .padding(.top)
-            
+
             if !successMessage.isEmpty {
                 Text(successMessage)
                     .foregroundColor(.green)
                     .padding()
             }
-            
+
             if !errorMessage.isEmpty {
                 Text(errorMessage)
                     .foregroundColor(.red)
                     .padding()
             }
+
+            Spacer()
+
+            Button(action: { showForgotPassword = false }) {
+                Text("Cancel")
+                    .foregroundColor(.blue)
+                    .padding()
+            }
         }
         .padding()
     }
-    
+
     func resetPassword() {
+        guard !email.isEmpty else {
+            errorMessage = "Please enter an email address."
+            successMessage = ""
+            return
+        }
+
         Auth.auth().sendPasswordReset(withEmail: email) { error in
             if let error = error {
                 errorMessage = error.localizedDescription
@@ -68,8 +83,4 @@ struct ForgotPasswordView: View {
     }
 }
 
-
-#Preview {
-    ForgotPasswordView(showForgotPassword: .constant(true))
-}
 

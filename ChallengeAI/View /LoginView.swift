@@ -173,42 +173,51 @@ struct LoginView: View {
 
     private func handleLoginOrRegister() {
         if loginData.registerUser {
-            if loginData.registerUserValid() {
-                loginData.register { success in
-                    if success {
-                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                        appState.isLoggedIn = true
-                    } else {
-                        showFailureMessage = true
-                    }
-                }
-            } else {
+            // Firebase Registration Logic
+            guard loginData.registerUserValid() else {
                 showErrorAlert = true
+                return
+            }
+
+            Auth.auth().createUser(withEmail: loginData.email, password: loginData.password) { authResult, error in
+                if let error = error {
+                    loginData.errorMessage = "Registration error: \(error.localizedDescription)"
+                    showErrorAlert = true
+                } else if let _ = authResult?.user {
+                    showSuccessMessage = true
+                    showFailureMessage = false
+                    // Automatically log in and navigate
+                    UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                    appState.isLoggedIn = true
+                }
             }
         } else {
-            if loginData.loginUserValid() {
-                loginData.login { success in
-                    if success {
-                        UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                        appState.isLoggedIn = true
-                    } else {
-                        showErrorAlert = true
-                    }
-                }
-            } else {
+            // Firebase Login Logic
+            guard loginData.loginUserValid() else {
                 showErrorAlert = true
+                return
+            }
+
+            Auth.auth().signIn(withEmail: loginData.email, password: loginData.password) { authResult, error in
+                if let error = error {
+                    loginData.errorMessage = "Login error: \(error.localizedDescription)"
+                    showErrorAlert = true
+                } else if let _ = authResult?.user {
+                    showSuccessMessage = false
+                    showFailureMessage = false
+                    // Set login state
+                    UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                    appState.isLoggedIn = true
+                }
             }
         }
     }
 
     private func toggleRegisterLoginMode() {
-        withAnimation {
-            loginData.registerUser.toggle()
-            if !loginData.registerUser {
-                loginData.password = ""
-                loginData.reEnterPassword = ""
-            }
-        }
+        loginData.registerUser.toggle()
+        showSuccessMessage = false
+        showFailureMessage = false
+        loginData.errorMessage = ""
     }
 }
 

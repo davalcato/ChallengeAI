@@ -10,12 +10,16 @@ import Combine
 
 // AppState model to manage global state
 class AppState: ObservableObject {
-    @Published var isLoggedIn: Bool = true
+    @Published var isLoggedIn: Bool {
+            didSet {
+                UserDefaults.standard.set(isLoggedIn, forKey: "isLoggedIn")
+            }
+        }
 
-    init(isLoggedIn: Bool) {
-        self.isLoggedIn = isLoggedIn
+        init(isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")) {
+            self.isLoggedIn = isLoggedIn
+        }
     }
-}
 
 // UserPreferencesService: Handles loading and saving preferences
 struct UserPreferencesService {
