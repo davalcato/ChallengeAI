@@ -17,7 +17,8 @@ struct WelcomeView: View {
         frequency: "Daily"
     )
     @State private var navigateToDashboard = false
-    @State private var showLogoutConfirmation = false // State to trigger the alert
+    @State private var showLogoutConfirmation = false
+    @State private var showInteractiveStats = false // State to toggle interactive stats
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -76,11 +77,31 @@ struct WelcomeView: View {
                     }
                     .padding(.horizontal, 40)
 
+                    // Toggle interactive stats
+                    Button(action: {
+                        showInteractiveStats.toggle()
+                    }) {
+                        Text(showInteractiveStats ? "Hide Stats" : "Show Stats")
+                            .font(.title3)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(showInteractiveStats ? Color.red : Color.green)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    .padding(.horizontal, 40)
+
+                    if showInteractiveStats {
+                        InteractiveStatsView()
+                            .transition(.opacity)
+                            .padding(.top, 20)
+                    }
+
                     Spacer()
 
                     // Logout Button
                     Button(action: {
-                        showLogoutConfirmation = true // Show the confirmation dialog
+                        showLogoutConfirmation = true
                     }) {
                         Text("Logout")
                             .foregroundColor(.red)
@@ -113,10 +134,55 @@ struct WelcomeView: View {
     }
 }
 
+struct InteractiveStatsView: View {
+    var body: some View {
+        VStack {
+            Text("User Insights")
+                .font(.title)
+                .fontWeight(.bold)
+                .padding()
+
+            // Sample charts or stats
+            HStack {
+                VStack {
+                    Text("Tasks Completed")
+                        .font(.headline)
+                        .foregroundColor(.blue)
+
+                    ProgressView(value: 75, total: 100)
+                        .progressViewStyle(LinearProgressViewStyle(tint: .green))
+                        .frame(width: 150)
+                }
+
+                VStack {
+                    Text("Daily Challenges")
+                        .font(.headline)
+                        .foregroundColor(.purple)
+
+                    ProgressView(value: 40, total: 100)
+                        .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+                        .frame(width: 150)
+                }
+            }
+            .padding()
+
+            Spacer()
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color.white)
+                .shadow(radius: 5)
+        )
+        .padding()
+    }
+}
+
 #Preview {
     WelcomeView()
         .environmentObject(AppState(isLoggedIn: UserDefaults.standard.bool(forKey: "isLoggedIn")))
 }
+
 
 
 
