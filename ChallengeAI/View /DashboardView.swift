@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AVFoundation
+import AVKit
 
 struct DashboardView: View {
     @Environment(\.presentationMode) var presentationMode // To dismiss the view
@@ -16,6 +16,9 @@ struct DashboardView: View {
     @State private var userPreferences = ["Fitness", "Mental Health", "Creativity"] // Example preferences
     @State private var completedChallenges = 0 // Number of completed challenges
     @State private var isFetchingChallenges = false // State to show/hide spinner
+
+    @State private var showVideoPlayer = false
+    @State private var videoURL: URL?
 
     var body: some View {
         ZStack {
@@ -67,16 +70,26 @@ struct DashboardView: View {
                 }
                 .frame(height: 250)
 
-                // New HStack with scrollable person icons
+                // New HStack with tappable person icons and names
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
-                        ForEach(0..<5, id: \.self) { _ in
-                            Image(systemName: "person.circle")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 50, height: 50)
-                                .foregroundColor(.white)
-                                .background(Circle().fill(Color.blue).shadow(radius: 5))
+                        ForEach(["Tanaya", "Cruz", "Draya", "Indiana", "Simerk"], id: \.self) { name in
+                            VStack {
+                                Button(action: {
+                                    playVideo(for: name)
+                                }) {
+                                    Image(name) // Asset name matches image name
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 50, height: 50)
+                                        .clipShape(Circle())
+                                        .shadow(radius: 5)
+                                }
+
+                                Text(name)
+                                    .font(.caption)
+                                    .foregroundColor(.white)
+                            }
                         }
                     }
                     .padding(.horizontal)
@@ -121,6 +134,12 @@ struct DashboardView: View {
                 })
             }
         }
+        .sheet(isPresented: $showVideoPlayer) {
+            if let url = videoURL {
+                VideoPlayer(player: AVPlayer(url: url))
+                    .edgesIgnoringSafeArea(.all)
+            }
+        }
     }
 
     // Fetch AI-generated personalized challenges
@@ -153,8 +172,18 @@ struct DashboardView: View {
 
         return challenges
     }
-}
 
+    // Play video based on the tapped name
+    func playVideo(for name: String) {
+        if let url = Bundle.main.url(forResource: name, withExtension: "mov") {
+            print("Video URL: \(url)") // Debugging
+            videoURL = url
+            showVideoPlayer = true
+        } else {
+            print("Video \(name).mp4 not found in the bundle.") // Debugging
+        }
+    }
+}
 
 
 

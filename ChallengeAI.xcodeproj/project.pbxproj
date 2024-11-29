@@ -13,6 +13,9 @@
 		DA102B3F2CE1675A002B9DF1 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA102B3E2CE1675A002B9DF1 /* AppState.swift */; };
 		DA102B412CE2FC74002B9DF1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA102B402CE2FC74002B9DF1 /* DashboardView.swift */; };
 		DA332B652CF671E8008B9C15 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA332B642CF671E8008B9C15 /* GoogleService-Info.plist */; };
+		DA4FC08C2CFA54250047D335 /* Tanaya.mov in Resources */ = {isa = PBXBuildFile; fileRef = DA4FC08B2CFA54250047D335 /* Tanaya.mov */; };
+		DA4FC08E2CFA54AF0047D335 /* Draya.mov in Resources */ = {isa = PBXBuildFile; fileRef = DA4FC08D2CFA54AF0047D335 /* Draya.mov */; };
+		DA4FC0902CFA54BD0047D335 /* Simerk.mov in Resources */ = {isa = PBXBuildFile; fileRef = DA4FC08F2CFA54BD0047D335 /* Simerk.mov */; };
 		DADA6F722CBDEF8C00DE6808 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F632CBDEF8C00DE6808 /* Persistence.swift */; };
 		DADA6F732CBDEF8C00DE6808 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F672CBDEF8C00DE6808 /* LoginView.swift */; };
 		DADA6F742CBDEF8C00DE6808 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F682CBDEF8C00DE6808 /* OnboardingView.swift */; };
@@ -65,6 +68,9 @@
 		DA102B3E2CE1675A002B9DF1 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		DA102B402CE2FC74002B9DF1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		DA332B642CF671E8008B9C15 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		DA4FC08B2CFA54250047D335 /* Tanaya.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = Tanaya.mov; sourceTree = "<group>"; };
+		DA4FC08D2CFA54AF0047D335 /* Draya.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = Draya.mov; sourceTree = "<group>"; };
+		DA4FC08F2CFA54BD0047D335 /* Simerk.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = Simerk.mov; sourceTree = "<group>"; };
 		DAADC9582CACB5AC00B3695C /* ChallengeAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChallengeAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAADC96E2CACB5AE00B3695C /* ChallengeAITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChallengeAITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAADC9782CACB5AF00B3695C /* ChallengeAIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChallengeAIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -142,6 +148,16 @@
 				5486912CF37DEF70DC5EF67E /* Pods-ChallengeAITests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		DA4FC08A2CFA54120047D335 /* Videos */ = {
+			isa = PBXGroup;
+			children = (
+				DA4FC08B2CFA54250047D335 /* Tanaya.mov */,
+				DA4FC08D2CFA54AF0047D335 /* Draya.mov */,
+				DA4FC08F2CFA54BD0047D335 /* Simerk.mov */,
+			);
+			path = Videos;
 			sourceTree = "<group>";
 		};
 		DAADC94F2CACB5AC00B3695C = {
@@ -229,6 +245,7 @@
 		DADA6F702CBDEF8C00DE6808 /* ChallengeAI */ = {
 			isa = PBXGroup;
 			children = (
+				DA4FC08A2CFA54120047D335 /* Videos */,
 				DADAAE5D2CE84A7A00E47B1B /* Helpers */,
 				DADAAE4C2CE802FB00E47B1B /* Services */,
 				DADA6F642CBDEF8C00DE6808 /* Model */,
@@ -369,8 +386,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA4FC0902CFA54BD0047D335 /* Simerk.mov in Resources */,
+				DA4FC08C2CFA54250047D335 /* Tanaya.mov in Resources */,
 				DADA6F782CBDEF8C00DE6808 /* Preview Assets.xcassets in Resources */,
 				DADA6F792CBDEF8C00DE6808 /* Assets.xcassets in Resources */,
+				DA4FC08E2CFA54AF0047D335 /* Draya.mov in Resources */,
 				DA332B652CF671E8008B9C15 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
