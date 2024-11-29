@@ -67,6 +67,21 @@ struct DashboardView: View {
                 }
                 .frame(height: 250)
 
+                // New HStack with scrollable person icons
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 20) {
+                        ForEach(0..<5, id: \.self) { _ in
+                            Image(systemName: "person.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.white)
+                                .background(Circle().fill(Color.blue).shadow(radius: 5))
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+
                 Spacer()
 
                 // Button to refresh challenges
@@ -92,19 +107,10 @@ struct DashboardView: View {
                             .cornerRadius(15)
                     }
                     .padding(.horizontal, 40)
+                    .padding(.bottom, 20) // Move the button towards the bottom
                 }
-
-                Spacer()
             }
         }
-        .gesture(
-            DragGesture()
-                .onEnded { value in
-                    if value.translation.width > 100 { // Detect right swipe
-                        presentationMode.wrappedValue.dismiss() // Navigate back
-                    }
-                }
-        )
         .onAppear {
             fetchPersonalizedChallenges()
         }
@@ -121,10 +127,10 @@ struct DashboardView: View {
     func fetchPersonalizedChallenges() {
         // Randomize preferences for fun
         userPreferences = userPreferences.shuffled().map { $0 + " AI" }
-        
+
         // Simulate AI response
         let simulatedAIResponse = generateChallengesBasedOnPreferences(userPreferences)
-        
+
         // Update the challenges state
         self.challenges = simulatedAIResponse
     }
@@ -132,7 +138,7 @@ struct DashboardView: View {
     // Mock function to simulate AI response based on preferences
     func generateChallengesBasedOnPreferences(_ preferences: [String]) -> [String] {
         var challenges: [String] = []
-        
+
         for preference in preferences {
             if preference.contains("Fitness") {
                 challenges.append("Complete a 5km run this week.")
@@ -144,10 +150,12 @@ struct DashboardView: View {
                 challenges.append("Explore a new challenge based on \(preference).")
             }
         }
-        
+
         return challenges
     }
 }
+
+
 
 
 struct ChallengeCard: View {
