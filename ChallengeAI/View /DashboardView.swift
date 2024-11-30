@@ -74,7 +74,7 @@ struct DashboardView: View {
                 // New HStack with tappable person icons and names
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
-                        ForEach(["Tanaya", "Cruz", "Draya", "Indiana", "Simerk"], id: \.self) { name in
+                        ForEach(["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"], id: \.self) { name in
                             VStack {
                                 Button(action: {
                                     playVideo(for: name)
@@ -189,8 +189,6 @@ struct DashboardView: View {
         }
     }
 }
-
-
 
 
 struct ChallengeCard: View {

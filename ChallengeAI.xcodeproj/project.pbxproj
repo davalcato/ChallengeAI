@@ -16,6 +16,8 @@
 		DA4FC08C2CFA54250047D335 /* Tanaya.mov in Resources */ = {isa = PBXBuildFile; fileRef = DA4FC08B2CFA54250047D335 /* Tanaya.mov */; };
 		DA4FC08E2CFA54AF0047D335 /* Draya.mov in Resources */ = {isa = PBXBuildFile; fileRef = DA4FC08D2CFA54AF0047D335 /* Draya.mov */; };
 		DA4FC0902CFA54BD0047D335 /* Simerk.mov in Resources */ = {isa = PBXBuildFile; fileRef = DA4FC08F2CFA54BD0047D335 /* Simerk.mov */; };
+		DA4FC0942CFAA7380047D335 /* amelaomor.mov in Resources */ = {isa = PBXBuildFile; fileRef = DA4FC0932CFAA7380047D335 /* amelaomor.mov */; };
+		DA4FC0962CFAA8190047D335 /* Indiana.mov in Resources */ = {isa = PBXBuildFile; fileRef = DA4FC0952CFAA8190047D335 /* Indiana.mov */; };
 		DADA6F722CBDEF8C00DE6808 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F632CBDEF8C00DE6808 /* Persistence.swift */; };
 		DADA6F732CBDEF8C00DE6808 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F672CBDEF8C00DE6808 /* LoginView.swift */; };
 		DADA6F742CBDEF8C00DE6808 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA6F682CBDEF8C00DE6808 /* OnboardingView.swift */; };
@@ -71,6 +73,8 @@
 		DA4FC08B2CFA54250047D335 /* Tanaya.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = Tanaya.mov; sourceTree = "<group>"; };
 		DA4FC08D2CFA54AF0047D335 /* Draya.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = Draya.mov; sourceTree = "<group>"; };
 		DA4FC08F2CFA54BD0047D335 /* Simerk.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = Simerk.mov; sourceTree = "<group>"; };
+		DA4FC0932CFAA7380047D335 /* amelaomor.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = amelaomor.mov; sourceTree = "<group>"; };
+		DA4FC0952CFAA8190047D335 /* Indiana.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = Indiana.mov; sourceTree = "<group>"; };
 		DAADC9582CACB5AC00B3695C /* ChallengeAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChallengeAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAADC96E2CACB5AE00B3695C /* ChallengeAITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChallengeAITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAADC9782CACB5AF00B3695C /* ChallengeAIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChallengeAIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -155,6 +159,8 @@
 			children = (
 				DA4FC08B2CFA54250047D335 /* Tanaya.mov */,
 				DA4FC08D2CFA54AF0047D335 /* Draya.mov */,
+				DA4FC0932CFAA7380047D335 /* amelaomor.mov */,
+				DA4FC0952CFAA8190047D335 /* Indiana.mov */,
 				DA4FC08F2CFA54BD0047D335 /* Simerk.mov */,
 			);
 			path = Videos;
@@ -389,9 +395,11 @@
 				DA4FC0902CFA54BD0047D335 /* Simerk.mov in Resources */,
 				DA4FC08C2CFA54250047D335 /* Tanaya.mov in Resources */,
 				DADA6F782CBDEF8C00DE6808 /* Preview Assets.xcassets in Resources */,
+				DA4FC0942CFAA7380047D335 /* amelaomor.mov in Resources */,
 				DADA6F792CBDEF8C00DE6808 /* Assets.xcassets in Resources */,
 				DA4FC08E2CFA54AF0047D335 /* Draya.mov in Resources */,
 				DA332B652CF671E8008B9C15 /* GoogleService-Info.plist in Resources */,
+				DA4FC0962CFAA8190047D335 /* Indiana.mov in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
