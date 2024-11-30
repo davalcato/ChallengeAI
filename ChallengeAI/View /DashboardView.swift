@@ -22,6 +22,8 @@ struct DashboardView: View {
     @State private var player: AVPlayer? = nil
     @State private var videoTransition: AnyTransition = .identity // To manage animations
 
+    @State private var scaleEffect: CGFloat = 1.0 // For scale effect during transition
+
     var body: some View {
         ZStack {
             LinearGradient(
@@ -133,7 +135,9 @@ struct DashboardView: View {
             if let player = player {
                 ZStack {
                     VideoPlayer(player: player)
-                        .transition(videoTransition)
+                        .scaleEffect(scaleEffect) // Apply scaling effect during the transition
+                        .opacity(Double(scaleEffect)) // Apply opacity fade effect
+                        .transition(.asymmetric(insertion: .scale, removal: .opacity)) // Combine scale and opacity for smooth transition
                         .gesture(
                             DragGesture()
                                 .onEnded { value in
@@ -216,7 +220,10 @@ struct DashboardView: View {
             return
         }
 
-        videoTransition = .move(edge: .leading) // Animate from right to left
+        scaleEffect = 0.9 // Shrink video during transition
+        withAnimation(.easeInOut(duration: 0.5)) {
+            scaleEffect = 1.0 // Scale back to normal after transition
+        }
 
         let nextName = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"][currentIndex + 1]
         if let url = Bundle.main.url(forResource: nextName, withExtension: "mov") {
@@ -238,7 +245,10 @@ struct DashboardView: View {
             return
         }
 
-        videoTransition = .move(edge: .trailing) // Animate from left to right
+        scaleEffect = 0.9 // Shrink video during transition
+        withAnimation(.easeInOut(duration: 0.5)) {
+            scaleEffect = 1.0 // Scale back to normal after transition
+        }
 
         let prevName = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"][currentIndex - 1]
         if let url = Bundle.main.url(forResource: prevName, withExtension: "mov") {
@@ -256,6 +266,7 @@ struct DashboardView: View {
         showVideoPlayer = false
     }
 }
+
 
 
 struct ChallengeCard: View {
