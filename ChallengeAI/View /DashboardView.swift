@@ -24,6 +24,8 @@ struct DashboardView: View {
 
     @State private var scaleEffect: CGFloat = 1.0 // For scale effect during transition
 
+    @State private var showSearch = false // Boolean to control search feature visibility
+
     var body: some View {
         ZStack {
             LinearGradient(
@@ -34,6 +36,23 @@ struct DashboardView: View {
             .ignoresSafeArea()
 
             VStack {
+                HStack {
+                    Spacer() // Pushes the search icon to the right
+                    Button(action: {
+                        showSearch.toggle() // Toggle the search feature
+                    }) {
+                        Image(systemName: "magnifyingglass") // Search icon
+                            .resizable()
+                            .frame(width: 14, height: 14) // Smaller size for the icon
+                            .foregroundColor(.white)
+                            .padding(10) // Adjusted padding to place it higher
+                            .background(Color.black.opacity(0.5))
+                            .clipShape(Circle())
+                    }
+                    .padding(.top, 2) // Adjusted to make it higher
+                    .padding(.trailing, 9)
+                }
+
                 Text("AI Tasks and Challenges")
                     .font(.largeTitle)
                     .fontWeight(.bold)
