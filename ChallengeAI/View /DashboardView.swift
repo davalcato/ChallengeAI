@@ -141,6 +141,8 @@ struct DashboardView: View {
                                         goToNextVideo()
                                     } else if value.translation.width > 50 {
                                         goToPreviousVideo()
+                                    } else if value.translation.height > 50 {
+                                        dismissVideo() // Swipe Down to Dismiss
                                     }
                                 }
                         )
@@ -205,6 +207,9 @@ struct DashboardView: View {
     }
 
     func goToNextVideo() {
+        // Stop the previous video audio if it's playing
+        player?.pause()
+        
         guard let currentName = videoURL?.lastPathComponent.split(separator: ".").first,
               let currentIndex = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"].firstIndex(of: String(currentName)),
               currentIndex + 1 < 5 else {
@@ -224,6 +229,9 @@ struct DashboardView: View {
     }
 
     func goToPreviousVideo() {
+        // Stop the previous video audio if it's playing
+        player?.pause()
+
         guard let currentName = videoURL?.lastPathComponent.split(separator: ".").first,
               let currentIndex = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"].firstIndex(of: String(currentName)),
               currentIndex - 1 >= 0 else {
@@ -241,10 +249,13 @@ struct DashboardView: View {
             print("Previous video \(prevName).mov not found in the bundle.")
         }
     }
+
+    func dismissVideo() {
+        // Stop the video and dismiss the player
+        player?.pause()
+        showVideoPlayer = false
+    }
 }
-
-
-
 
 
 struct ChallengeCard: View {
