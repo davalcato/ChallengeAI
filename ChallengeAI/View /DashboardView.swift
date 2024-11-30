@@ -19,6 +19,7 @@ struct DashboardView: View {
 
     @State private var showVideoPlayer = false
     @State private var videoURL: URL?
+    @State private var player: AVPlayer? = nil // AVPlayer instance for video playback
 
     var body: some View {
         ZStack {
@@ -135,9 +136,12 @@ struct DashboardView: View {
             }
         }
         .sheet(isPresented: $showVideoPlayer) {
-            if let url = videoURL {
-                VideoPlayer(player: AVPlayer(url: url))
+            if let player = player {
+                VideoPlayer(player: player)
                     .edgesIgnoringSafeArea(.all)
+                    .onDisappear {
+                        player.pause() // Pause playback when the sheet is dismissed
+                    }
             }
         }
     }
@@ -176,14 +180,16 @@ struct DashboardView: View {
     // Play video based on the tapped name
     func playVideo(for name: String) {
         if let url = Bundle.main.url(forResource: name, withExtension: "mov") {
-            print("Video URL: \(url)") // Debugging
+            player = AVPlayer(url: url)
+            player?.play() // Start playback immediately
             videoURL = url
             showVideoPlayer = true
         } else {
-            print("Video \(name).mp4 not found in the bundle.") // Debugging
+            print("Video \(name).mov not found in the bundle.")
         }
     }
 }
+
 
 
 
