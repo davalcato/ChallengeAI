@@ -9,21 +9,21 @@ import SwiftUI
 import AVKit
 
 struct DashboardView: View {
-    @Environment(\.presentationMode) var presentationMode // To dismiss the view
-    @State private var challenges: [String] = [] // Store AI-generated challenges
+    @Environment(\.presentationMode) var presentationMode
+    @State private var challenges: [String] = []
     @State private var showChallengeDetails = false
-    @State private var selectedChallenge: String? = nil // Track selected challenge
-    @State private var userPreferences = ["Fitness", "Mental Health", "Creativity"] // Example preferences
-    @State private var completedChallenges = 0 // Number of completed challenges
-    @State private var isFetchingChallenges = false // State to show/hide spinner
+    @State private var selectedChallenge: String? = nil
+    @State private var userPreferences = ["Fitness", "Mental Health", "Creativity"]
+    @State private var completedChallenges = 0
+    @State private var isFetchingChallenges = false
 
     @State private var showVideoPlayer = false
     @State private var videoURL: URL?
-    @State private var player: AVPlayer? = nil // AVPlayer instance for video playback
+    @State private var player: AVPlayer? = nil
+    @State private var videoTransition: AnyTransition = .identity // To manage animations
 
     var body: some View {
         ZStack {
-            // Dynamic gradient background
             LinearGradient(
                 colors: [Color.blue.opacity(0.6), Color.purple.opacity(0.6)],
                 startPoint: .topLeading,
@@ -32,7 +32,6 @@ struct DashboardView: View {
             .ignoresSafeArea()
 
             VStack {
-                // Title and progress tracking
                 Text("AI Tasks and Challenges")
                     .font(.largeTitle)
                     .fontWeight(.bold)
@@ -40,7 +39,6 @@ struct DashboardView: View {
                     .foregroundColor(.white)
                     .padding(.top, 40)
 
-                // Animated progress bar
                 ProgressView(value: Double(completedChallenges), total: Double(challenges.count))
                     .progressViewStyle(LinearProgressViewStyle(tint: .green))
                     .padding(.horizontal, 40)
@@ -53,7 +51,6 @@ struct DashboardView: View {
                     .foregroundColor(.white.opacity(0.8))
                     .padding(.bottom, 20)
 
-                // Display challenges as swipeable cards
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
                         ForEach(challenges, id: \.self) { challenge in
@@ -71,7 +68,6 @@ struct DashboardView: View {
                 }
                 .frame(height: 250)
 
-                // New HStack with tappable person icons and names
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
                         ForEach(["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"], id: \.self) { name in
@@ -79,14 +75,13 @@ struct DashboardView: View {
                                 Button(action: {
                                     playVideo(for: name)
                                 }) {
-                                    Image(name) // Asset name matches image name
+                                    Image(name)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 50, height: 50)
                                         .clipShape(Circle())
                                         .shadow(radius: 5)
                                 }
-
                                 Text(name)
                                     .font(.caption)
                                     .foregroundColor(.white)
@@ -98,7 +93,6 @@ struct DashboardView: View {
 
                 Spacer()
 
-                // Button to refresh challenges
                 if isFetchingChallenges {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: .white))
@@ -121,7 +115,7 @@ struct DashboardView: View {
                             .cornerRadius(15)
                     }
                     .padding(.horizontal, 40)
-                    .padding(.bottom, 20) // Move the button towards the bottom
+                    .padding(.bottom, 20)
                 }
             }
         }
@@ -137,28 +131,50 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $showVideoPlayer) {
             if let player = player {
-                VideoPlayer(player: player)
-                    .edgesIgnoringSafeArea(.all)
-                    .onDisappear {
-                        player.pause() // Pause playback when the sheet is dismissed
+                ZStack {
+                    VideoPlayer(player: player)
+                        .transition(videoTransition)
+                        .gesture(
+                            DragGesture()
+                                .onEnded { value in
+                                    if value.translation.width < -50 {
+                                        goToNextVideo()
+                                    } else if value.translation.width > 50 {
+                                        goToPreviousVideo()
+                                    }
+                                }
+                        )
+                        .onDisappear {
+                            player.pause()
+                        }
+
+                    VStack {
+                        HStack {
+                            Button(action: {
+                                showVideoPlayer = false
+                            }) {
+                                Image(systemName: "xmark")
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background(Color.black.opacity(0.5))
+                                    .clipShape(Circle())
+                            }
+                            Spacer()
+                        }
+                        .padding()
+                        Spacer()
                     }
+                }
             }
         }
     }
 
-    // Fetch AI-generated personalized challenges
     func fetchPersonalizedChallenges() {
-        // Randomize preferences for fun
         userPreferences = userPreferences.shuffled().map { $0 + " AI" }
-
-        // Simulate AI response
         let simulatedAIResponse = generateChallengesBasedOnPreferences(userPreferences)
-
-        // Update the challenges state
         self.challenges = simulatedAIResponse
     }
 
-    // Mock function to simulate AI response based on preferences
     func generateChallengesBasedOnPreferences(_ preferences: [String]) -> [String] {
         var challenges: [String] = []
 
@@ -177,18 +193,58 @@ struct DashboardView: View {
         return challenges
     }
 
-    // Play video based on the tapped name
     func playVideo(for name: String) {
         if let url = Bundle.main.url(forResource: name, withExtension: "mov") {
             player = AVPlayer(url: url)
-            player?.play() // Start playback immediately
+            player?.play()
             videoURL = url
             showVideoPlayer = true
         } else {
             print("Video \(name).mov not found in the bundle.")
         }
     }
+
+    func goToNextVideo() {
+        guard let currentName = videoURL?.lastPathComponent.split(separator: ".").first,
+              let currentIndex = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"].firstIndex(of: String(currentName)),
+              currentIndex + 1 < 5 else {
+            return
+        }
+
+        videoTransition = .move(edge: .leading) // Animate from right to left
+
+        let nextName = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"][currentIndex + 1]
+        if let url = Bundle.main.url(forResource: nextName, withExtension: "mov") {
+            player = AVPlayer(url: url)
+            player?.play()
+            videoURL = url
+        } else {
+            print("Next video \(nextName).mov not found in the bundle.")
+        }
+    }
+
+    func goToPreviousVideo() {
+        guard let currentName = videoURL?.lastPathComponent.split(separator: ".").first,
+              let currentIndex = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"].firstIndex(of: String(currentName)),
+              currentIndex - 1 >= 0 else {
+            return
+        }
+
+        videoTransition = .move(edge: .trailing) // Animate from left to right
+
+        let prevName = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"][currentIndex - 1]
+        if let url = Bundle.main.url(forResource: prevName, withExtension: "mov") {
+            player = AVPlayer(url: url)
+            player?.play()
+            videoURL = url
+        } else {
+            print("Previous video \(prevName).mov not found in the bundle.")
+        }
+    }
 }
+
+
+
 
 
 struct ChallengeCard: View {
