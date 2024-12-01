@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct ProfileView: View {
     @Binding var userPreferences: UserPreferences
     @State private var showSuccessMessage = false
+    @State private var isPickerPresented = false
+    @State private var profileImage: UIImage? = loadSavedImage() // Load saved image on startup
 
     var body: some View {
         NavigationView {
@@ -19,13 +22,31 @@ struct ProfileView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 20) {
-                    // Profile header with icon
+                    // Profile header with tappable photo
                     HStack {
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 80, height: 80)
-                            .foregroundColor(.white)
+                        ZStack {
+                            if let profileImage = profileImage {
+                                Image(uiImage: profileImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 80, height: 80)
+                                    .clipShape(Circle())
+                                    .shadow(radius: 10)
+                                    .onTapGesture {
+                                        isPickerPresented = true
+                                    }
+                            } else {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 80, height: 80)
+                                    .foregroundColor(.white)
+                                    .onTapGesture {
+                                        isPickerPresented = true
+                                    }
+                            }
+                        }
+
                         Text("Profile Page")
                             .font(.largeTitle)
                             .fontWeight(.bold)
@@ -77,6 +98,9 @@ struct ProfileView: View {
                 }
                 .navigationTitle("Profile")
             }
+            .sheet(isPresented: $isPickerPresented) {
+                PhotoPicker(profileImage: $profileImage)
+            }
         }
         .onAppear {
             // Trigger a subtle animation on load
@@ -84,9 +108,82 @@ struct ProfileView: View {
                 showSuccessMessage = true
             }
         }
+        .onChange(of: profileImage) { newImage in
+            if let newImage = newImage {
+                saveImage(newImage)
+            }
+        }
     }
 }
 
+// MARK: - Photo Picker
+struct PhotoPicker: UIViewControllerRepresentable {
+    @Binding var profileImage: UIImage?
+
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var config = PHPickerConfiguration()
+        config.filter = .images
+        config.selectionLimit = 1
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        let parent: PhotoPicker
+
+        init(_ parent: PhotoPicker) {
+            self.parent = parent
+        }
+
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            picker.dismiss(animated: true)
+            guard let provider = results.first?.itemProvider, provider.canLoadObject(ofClass: UIImage.self) else { return }
+
+            provider.loadObject(ofClass: UIImage.self) { image, _ in
+                DispatchQueue.main.async {
+                    self.parent.profileImage = image as? UIImage
+                }
+            }
+        }
+    }
+}
+
+// MARK: - File Management
+func saveImage(_ image: UIImage) {
+    guard let data = image.jpegData(compressionQuality: 0.8),
+          let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+        return
+    }
+
+    let fileURL = directory.appendingPathComponent("profile_image.jpg")
+    do {
+        try data.write(to: fileURL)
+        print("Image saved successfully!")
+    } catch {
+        print("Error saving image: \(error)")
+    }
+}
+
+func loadSavedImage() -> UIImage? {
+    guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+        return nil
+    }
+
+    let fileURL = directory.appendingPathComponent("profile_image.jpg")
+    if FileManager.default.fileExists(atPath: fileURL.path) {
+        return UIImage(contentsOfFile: fileURL.path)
+    }
+    return nil
+}
+
+// MARK: - Profile Preference Row
 struct ProfilePreferenceRow: View {
     var title: String
     var value: String
@@ -114,6 +211,8 @@ struct ProfilePreferenceRow: View {
         frequency: "Daily"
     )))
 }
+
+
 
 
 
