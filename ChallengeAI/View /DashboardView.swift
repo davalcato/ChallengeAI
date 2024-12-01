@@ -25,6 +25,8 @@ struct DashboardView: View {
     @State private var scaleEffect: CGFloat = 1.0 // For scale effect during transition
 
     @State private var showSearch = false // Boolean to control search feature visibility
+    @State private var searchText = "" // Text input for search
+    @State private var filteredNames = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"] // All names for search
 
     var body: some View {
         ZStack {
@@ -89,9 +91,37 @@ struct DashboardView: View {
                 }
                 .frame(height: 250)
 
+                // Show the search bar when toggled
+                if showSearch {
+                    VStack {
+                        HStack {
+                            TextField("Search", text: $searchText)
+                                .padding()
+                                .background(Color.white.opacity(0.7))
+                                .cornerRadius(8)
+                                .padding(.horizontal)
+                                .onChange(of: searchText) { _ in
+                                    filterNames()
+                                }
+                                .transition(.move(edge: .top)) // Animation for search bar
+                            
+                            // Clear button to reset the search
+                            Button(action: {
+                                searchText = ""
+                                filteredNames = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"] // Reset filtered results
+                            }) {
+                                Text("Clear")
+                                    .foregroundColor(.white)
+                            }
+                            .padding(.trailing, 10)
+                        }
+                    }
+                    .transition(.move(edge: .top)) // Animation for search bar and button
+                }
+
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
-                        ForEach(["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"], id: \.self) { name in
+                        ForEach(filteredNames, id: \.self) { name in
                             VStack {
                                 Button(action: {
                                     playVideo(for: name)
@@ -257,7 +287,7 @@ struct DashboardView: View {
     func goToPreviousVideo() {
         // Stop the previous video audio if it's playing
         player?.pause()
-
+        
         guard let currentName = videoURL?.lastPathComponent.split(separator: ".").first,
               let currentIndex = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"].firstIndex(of: String(currentName)),
               currentIndex - 1 >= 0 else {
@@ -269,23 +299,28 @@ struct DashboardView: View {
             scaleEffect = 1.0 // Scale back to normal after transition
         }
 
-        let prevName = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"][currentIndex - 1]
-        if let url = Bundle.main.url(forResource: prevName, withExtension: "mov") {
+        let previousName = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"][currentIndex - 1]
+        if let url = Bundle.main.url(forResource: previousName, withExtension: "mov") {
             player = AVPlayer(url: url)
             player?.play()
             videoURL = url
         } else {
-            print("Previous video \(prevName).mov not found in the bundle.")
+            print("Previous video \(previousName).mov not found in the bundle.")
         }
     }
 
     func dismissVideo() {
-        // Stop the video and dismiss the player
-        player?.pause()
         showVideoPlayer = false
     }
-}
 
+    func filterNames() {
+        if searchText.isEmpty {
+            filteredNames = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"]
+        } else {
+            filteredNames = filteredNames.filter { $0.lowercased().contains(searchText.lowercased()) }
+        }
+    }
+}
 
 
 struct ChallengeCard: View {
