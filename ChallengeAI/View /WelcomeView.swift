@@ -18,126 +18,131 @@ struct WelcomeView: View {
     )
     @State private var navigateToDashboard = false
     @State private var showLogoutConfirmation = false
-    @State private var showInteractiveStats = false // State to toggle interactive stats
-    @State private var buttonScale: CGFloat = 1.0 // For animation
+    @State private var showInteractiveStats = false
+    @State private var buttonScale: CGFloat = 1.0
+    @State private var images = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"] // Add your images here
 
     var body: some View {
         if #available(iOS 16.0, *) {
             NavigationStack {
-                VStack {
-                    // Top Section with Profile Image and Title
-                    HStack {
-                        Text("ChallengeAI")
-                            .font(.system(size: 17, weight: .bold, design: .default))
-                            .italic()
-                            .foregroundColor(.primary)
+                ZStack(alignment: .topTrailing) {
+                    VStack {
+                        // Top Section: Title and Buttons
+                        Text("Welcome to the Dashboard")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(.blue)
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 20)
+
+                        HStack {
+                            // "Go to Dashboard" Button
+                            Button(action: {
+                                withAnimation(.spring()) {
+                                    navigateToDashboard = true
+                                }
+                            }) {
+                                Text("Go to Dashboard")
+                                    .font(.subheadline)
+                                    .padding(8)
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                            }
                             .padding(.leading, 16)
-                            .padding(.top, -16)
+
+                            Spacer()
+
+                            // "Show Stats" Button
+                            Button(action: {
+                                withAnimation {
+                                    showInteractiveStats.toggle()
+                                }
+                            }) {
+                                Text(showInteractiveStats ? "Hide Stats" : "Show Stats")
+                                    .font(.subheadline)
+                                    .padding(8)
+                                    .background(showInteractiveStats ? Color.red : Color.green)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                            }
+                            .padding(.trailing, 16)
+                        }
+                        .padding(.top, 10)
+
+                        // NavigationLink to Dashboard
+                        NavigationLink(
+                            destination: DashboardView(),
+                            isActive: $navigateToDashboard
+                        ) {
+                            EmptyView()
+                        }
+
+                        // Stats Section
+                        if showInteractiveStats {
+                            InteractiveStatsView()
+                                .transition(.slide)
+                                .padding(.vertical, 10)
+                        }
+
+                        // Scrollable Images Section
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 20) {
+                                ForEach(images, id: \.self) { imageName in
+                                    Image(imageName)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(height: 200)
+                                        .cornerRadius(10)
+                                        .clipped()
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                        }
+                        .padding(.top, 20)
 
                         Spacer()
 
+                        // Logout Button
                         Button(action: {
-                            withAnimation {
-                                showProfileView = true
-                            }
+                            showLogoutConfirmation = true
                         }) {
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .foregroundColor(.blue)
+                            Text("Logout")
+                                .foregroundColor(.red)
+                                .fontWeight(.bold)
+                                .padding(.bottom, 16)
+                                .scaleEffect(buttonScale)
+                                .animation(.easeInOut(duration: 0.5), value: buttonScale)
                         }
-                        .padding(.trailing, 16)
-                        .padding(.top, -16)
                     }
-
-                    Spacer()
-
-                    Text("Welcome to the Dashboard")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.blue)
-                        .padding(.bottom, 50)
-                        .scaleEffect(buttonScale)
-                        .animation(.easeInOut(duration: 0.5), value: buttonScale)
-
-                    // NavigationLink triggered by state
-                    NavigationLink(
-                        destination: DashboardView(),
-                        isActive: $navigateToDashboard
+                    .sheet(isPresented: $showProfileView) {
+                        ProfileView(userPreferences: $userPreferences)
+                            .transition(.move(edge: .bottom))
+                    }
+                    .padding()
+                    .confirmationDialog(
+                        "Are you sure you want to Logout?",
+                        isPresented: $showLogoutConfirmation,
+                        titleVisibility: .visible
                     ) {
-                        EmptyView()
-                    }
-
-                    // Button to navigate to Dashboard with animation
-                    Button(action: {
-                        withAnimation(.spring()) {
-                            navigateToDashboard = true
+                        Button("Logout", role: .destructive) {
+                            handleLogout()
                         }
-                    }) {
-                        Text("Go to Dashboard")
-                            .font(.title2)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(
-                                LinearGradient(gradient: Gradient(colors: [.blue, .purple]), startPoint: .leading, endPoint: .trailing)
-                            )
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                        Button("Cancel", role: .cancel) { }
                     }
-                    .padding(.horizontal, 40)
 
-                    // Toggle interactive stats with fun animation
+                    // Profile Button
                     Button(action: {
                         withAnimation {
-                            showInteractiveStats.toggle()
+                            showProfileView = true
                         }
                     }) {
-                        Text(showInteractiveStats ? "Hide Stats" : "Show Stats")
-                            .font(.title3)
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.blue)
                             .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(showInteractiveStats ? Color.red : Color.green)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                            .shadow(radius: 10)
                     }
-                    .padding(.horizontal, 40)
-
-                    if showInteractiveStats {
-                        InteractiveStatsView()
-                            .transition(.slide)
-                            .padding(.top, 20)
-                    }
-
-                    Spacer()
-
-                    // Logout Button with animation
-                    Button(action: {
-                        showLogoutConfirmation = true
-                    }) {
-                        Text("Logout")
-                            .foregroundColor(.red)
-                            .fontWeight(.bold)
-                            .padding(.bottom, 16)
-                            .scaleEffect(buttonScale)
-                            .animation(.easeInOut(duration: 0.5), value: buttonScale)
-                    }
-                }
-                .sheet(isPresented: $showProfileView) {
-                    ProfileView(userPreferences: $userPreferences)
-                        .transition(.move(edge: .bottom))
-                }
-                .padding()
-                .confirmationDialog(
-                    "Are you sure you want to Logout?",
-                    isPresented: $showLogoutConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button("Logout", role: .destructive) {
-                        handleLogout()
-                    }
-                    Button("Cancel", role: .cancel) { }
                 }
             }
             .background(
@@ -164,7 +169,6 @@ struct InteractiveStatsView: View {
                 .padding()
                 .foregroundColor(.purple)
 
-            // Sample charts or stats with exciting visuals
             HStack {
                 VStack {
                     Text("Tasks Completed")
@@ -200,11 +204,6 @@ struct InteractiveStatsView: View {
         )
         .padding()
     }
-}
-
-#Preview {
-    WelcomeView()
-        .environmentObject(AppState(isLoggedIn: UserDefaults.standard.bool(forKey: "isLoggedIn")))
 }
 
 
