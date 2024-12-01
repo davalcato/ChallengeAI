@@ -222,6 +222,15 @@ struct DashboardView: View {
                 }
             }
         }
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    if value.translation.width > 50 {
+                        // Swipe right to go back to the WelcomeView
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+        )
     }
 
     func fetchPersonalizedChallenges() {

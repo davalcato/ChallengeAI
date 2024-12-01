@@ -19,6 +19,7 @@ struct WelcomeView: View {
     @State private var navigateToDashboard = false
     @State private var showLogoutConfirmation = false
     @State private var showInteractiveStats = false // State to toggle interactive stats
+    @State private var buttonScale: CGFloat = 1.0 // For animation
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -36,7 +37,9 @@ struct WelcomeView: View {
                         Spacer()
 
                         Button(action: {
-                            showProfileView = true
+                            withAnimation {
+                                showProfileView = true
+                            }
                         }) {
                             Image(systemName: "person.circle.fill")
                                 .resizable()
@@ -53,7 +56,10 @@ struct WelcomeView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
+                        .foregroundColor(.blue)
                         .padding(.bottom, 50)
+                        .scaleEffect(buttonScale)
+                        .animation(.easeInOut(duration: 0.5), value: buttonScale)
 
                     // NavigationLink triggered by state
                     NavigationLink(
@@ -63,23 +69,29 @@ struct WelcomeView: View {
                         EmptyView()
                     }
 
-                    // Button to navigate to Dashboard
+                    // Button to navigate to Dashboard with animation
                     Button(action: {
-                        navigateToDashboard = true
+                        withAnimation(.spring()) {
+                            navigateToDashboard = true
+                        }
                     }) {
                         Text("Go to Dashboard")
                             .font(.title2)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.blue)
+                            .background(
+                                LinearGradient(gradient: Gradient(colors: [.blue, .purple]), startPoint: .leading, endPoint: .trailing)
+                            )
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
                     .padding(.horizontal, 40)
 
-                    // Toggle interactive stats
+                    // Toggle interactive stats with fun animation
                     Button(action: {
-                        showInteractiveStats.toggle()
+                        withAnimation {
+                            showInteractiveStats.toggle()
+                        }
                     }) {
                         Text(showInteractiveStats ? "Hide Stats" : "Show Stats")
                             .font(.title3)
@@ -88,28 +100,33 @@ struct WelcomeView: View {
                             .background(showInteractiveStats ? Color.red : Color.green)
                             .foregroundColor(.white)
                             .cornerRadius(10)
+                            .shadow(radius: 10)
                     }
                     .padding(.horizontal, 40)
 
                     if showInteractiveStats {
                         InteractiveStatsView()
-                            .transition(.opacity)
+                            .transition(.slide)
                             .padding(.top, 20)
                     }
 
                     Spacer()
 
-                    // Logout Button
+                    // Logout Button with animation
                     Button(action: {
                         showLogoutConfirmation = true
                     }) {
                         Text("Logout")
                             .foregroundColor(.red)
+                            .fontWeight(.bold)
                             .padding(.bottom, 16)
+                            .scaleEffect(buttonScale)
+                            .animation(.easeInOut(duration: 0.5), value: buttonScale)
                     }
                 }
                 .sheet(isPresented: $showProfileView) {
                     ProfileView(userPreferences: $userPreferences)
+                        .transition(.move(edge: .bottom))
                 }
                 .padding()
                 .confirmationDialog(
@@ -123,6 +140,10 @@ struct WelcomeView: View {
                     Button("Cancel", role: .cancel) { }
                 }
             }
+            .background(
+                LinearGradient(gradient: Gradient(colors: [.purple, .blue]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                    .edgesIgnoringSafeArea(.all)
+            )
         } else {
             Text("Your device does not support this feature.")
         }
@@ -141,8 +162,9 @@ struct InteractiveStatsView: View {
                 .font(.title)
                 .fontWeight(.bold)
                 .padding()
+                .foregroundColor(.purple)
 
-            // Sample charts or stats
+            // Sample charts or stats with exciting visuals
             HStack {
                 VStack {
                     Text("Tasks Completed")
@@ -152,6 +174,7 @@ struct InteractiveStatsView: View {
                     ProgressView(value: 75, total: 100)
                         .progressViewStyle(LinearProgressViewStyle(tint: .green))
                         .frame(width: 150)
+                        .padding(.top, 10)
                 }
 
                 VStack {
@@ -162,6 +185,7 @@ struct InteractiveStatsView: View {
                     ProgressView(value: 40, total: 100)
                         .progressViewStyle(LinearProgressViewStyle(tint: .orange))
                         .frame(width: 150)
+                        .padding(.top, 10)
                 }
             }
             .padding()
@@ -172,7 +196,7 @@ struct InteractiveStatsView: View {
         .background(
             RoundedRectangle(cornerRadius: 10)
                 .fill(Color.white)
-                .shadow(radius: 5)
+                .shadow(radius: 10)
         )
         .padding()
     }
@@ -182,6 +206,7 @@ struct InteractiveStatsView: View {
     WelcomeView()
         .environmentObject(AppState(isLoggedIn: UserDefaults.standard.bool(forKey: "isLoggedIn")))
 }
+
 
 
 
