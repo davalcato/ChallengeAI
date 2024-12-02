@@ -20,7 +20,14 @@ struct WelcomeView: View {
     @State private var showLogoutConfirmation = false
     @State private var showInteractiveStats = false
     @State private var buttonScale: CGFloat = 1.0
-    @State private var images = ["Tanaya", "amelaomor", "Draya", "Indiana", "Simerk"] // Add your images here
+    @State private var images = [
+        ImageItem(id: UUID(), name: "amelaomor"),
+        ImageItem(id: UUID(), name: "Tanaya"),
+        ImageItem(id: UUID(), name: "Draya"),
+        ImageItem(id: UUID(), name: "Indiana"),
+        ImageItem(id: UUID(), name: "Simerk")
+    ]
+    @State private var selectedImage: ImageItem?
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -28,9 +35,10 @@ struct WelcomeView: View {
                 ZStack(alignment: .topTrailing) {
                     VStack {
                         // Top Section: Title and Buttons
-                        Text("Welcome to the Dashboard")
+                        Text("ChallengeAI")
                             .font(.largeTitle)
                             .fontWeight(.bold)
+                            .italic()
                             .foregroundColor(.blue)
                             .multilineTextAlignment(.center)
                             .padding(.top, 20)
@@ -88,13 +96,18 @@ struct WelcomeView: View {
                         // Scrollable Images Section
                         ScrollView(.vertical, showsIndicators: false) {
                             VStack(spacing: 20) {
-                                ForEach(images, id: \.self) { imageName in
-                                    Image(imageName)
+                                ForEach(images) { imageItem in
+                                    Image(imageItem.name)
                                         .resizable()
                                         .scaledToFill()
                                         .frame(height: 200)
                                         .cornerRadius(10)
                                         .clipped()
+                                        .onTapGesture {
+                                            withAnimation {
+                                                selectedImage = imageItem // Set the tapped image
+                                            }
+                                        }
                                 }
                             }
                             .padding(.horizontal, 16)
@@ -149,6 +162,9 @@ struct WelcomeView: View {
                 LinearGradient(gradient: Gradient(colors: [.purple, .blue]), startPoint: .topLeading, endPoint: .bottomTrailing)
                     .edgesIgnoringSafeArea(.all)
             )
+            .fullScreenCover(item: $selectedImage) { imageItem in
+                FullScreenImageView(imageName: imageItem.name)
+            }
         } else {
             Text("Your device does not support this feature.")
         }
@@ -158,6 +174,36 @@ struct WelcomeView: View {
         UserDefaults.standard.set(false, forKey: "isLoggedIn")
         appState.isLoggedIn = false
     }
+}
+
+struct FullScreenImageView: View {
+    let imageName: String
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
+
+            Image(imageName)
+                .resizable()
+                .scaledToFit()
+                .onTapGesture {
+                    dismiss() // Dismiss the full-screen view on tap
+                }
+        }
+        .gesture(
+            DragGesture().onEnded { value in
+                if value.translation.height > 100 {
+                    dismiss() // Dismiss when swiped down
+                }
+            }
+        )
+    }
+}
+
+struct ImageItem: Identifiable {
+    let id: UUID
+    let name: String
 }
 
 struct InteractiveStatsView: View {
